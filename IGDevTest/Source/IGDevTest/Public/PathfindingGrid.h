@@ -13,57 +13,76 @@ class APathfindingGrid : public AActor
 	GENERATED_BODY()
 
 private:
-	void BuildGrid();
-	void DebugGrid();
+    // Função para construir a grade de pathfinding
+    void BuildGrid();
+
+    // Função para desenhar a grade no modo de depuração
+    void DebugGrid();
 
 public:
-	// Sets default values for this actor's properties
-	APathfindingGrid();
+    // Construtor que define os valores padrão para as propriedades deste ator
+    APathfindingGrid();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+    // Função chamada quando o jogo começa ou quando o ator é gerado
+    virtual void BeginPlay() override;
 
 public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+    // Função chamada a cada frame
+    virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Grid)
-	FVector GridSize;
+    // Tamanho da grade no espaço 3D
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Grid)
+    FVector GridSize;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Grid)
-	float NodeSize;
+    // Tamanho de cada nó na grade
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Grid)
+    float NodeSize;
 
-	UPROPERTY(EditAnywhere, Category = Grid)
-	TArray<TEnumAsByte<EObjectTypeQuery>> Trace;
+    // Tipos de objetos considerados no traço de detecção de nós
+    UPROPERTY(EditAnywhere, Category = Grid)
+    TArray<TEnumAsByte<EObjectTypeQuery>> Trace;
 
-	UPROPERTY(EditAnywhere, Category = Grid)
-	bool DebugDraw;
+    // Flag para desenhar a grade no modo de depuração
+    UPROPERTY(EditAnywhere, Category = Grid)
+    bool DebugDraw;
 
-	PathfindingNode* NodeFromLocation(FVector const& Loc);
-	FVector LocationFromNode(PathfindingNode* const& Node);
-	TArray<PathfindingNode*> GetNeighbourNodes(PathfindingNode* const& Node);
+    // Retorna o nó correspondente a uma determinada localização no espaço
+    PathfindingNode* NodeFromLocation(FVector const& Loc);
 
-	TArray<AActor*> ActorsToIgnore;
-	FHitResult HitResult;
-	TArray<TArray<TArray<PathfindingNode*>>> NodeGrid;
+    // Retorna a localização no espaço correspondente a um determinado nó
+    FVector LocationFromNode(PathfindingNode* const& Node);
 
-	FVector GetRandomLocationWithinGrid();
+    // Retorna os nós vizinhos de um determinado nó
+    TArray<PathfindingNode*> GetNeighbourNodes(PathfindingNode* const& Node);
 
-	// Armazena as posi��es dos cubos no grid
-	TSet<PathfindingNode*> BlockedNodes;
+    // Lista de atores a serem ignorados ao traçar os nós
+    TArray<AActor*> ActorsToIgnore;
 
-	// Marca um n� como bloqueado se houver um cubo presente
-	void MarkBlockedNodes(TArray<UStaticMeshComponent*> CubeArray);
+    // Resultado da detecção de colisão para os nós
+    FHitResult HitResult;
 
-	// Verifica se o n� est� bloqueado
-	bool IsNodeBlocked(PathfindingNode* Node);
+    // Grade tridimensional de nós de pathfinding
+    TArray<TArray<TArray<PathfindingNode*>>> NodeGrid;
 
-	FVector SnapToGrid(const FVector& Location);
+    // Retorna uma localização aleatória dentro da grade
+    FVector GetRandomLocationWithinGrid();
 
-	// Detecta o n� sob o cursor do mouse e altera a cor
-	void HighlightNodeUnderCursor(FVector MouseLocation);
+    // Conjunto de nós bloqueados (onde há cubos)
+    TSet<PathfindingNode*> BlockedNodes;
+
+    // Marca nós como bloqueados se houver cubos presentes
+    void MarkBlockedNodes(TArray<UStaticMeshComponent*> CubeArray);
+
+    // Verifica se um nó está bloqueado
+    bool IsNodeBlocked(PathfindingNode* Node);
+
+    // Ajusta uma localização para o centro do nó da grade mais próximo
+    FVector SnapToGrid(const FVector& Location);
+
+    // Detecta o nó sob o cursor do mouse e altera sua cor
+    void HighlightNodeUnderCursor(FVector MouseLocation);
 
 private:
-	FVector CurrentHighlightedNodeLocation;
-};
+    // Armazena a localização do nó atualmente destacado
+    FVector CurrentHighlightedNodeLocation;

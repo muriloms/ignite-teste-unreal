@@ -20,17 +20,16 @@ AGridController::AGridController()
     CurrentPathIndex = 0;
     MoveSpeed = 200.0f; // Velocidade de movimento do cubo
 
-    bIsAwaitingTarget = false; // Inicialmente, n„o estamos aguardando o clique no grid
-    bIsCubeMoving = false;     // Inicialmente, nenhum cubo est· se movendo
+    bIsAwaitingTarget = false; // Inicialmente, n√£o estamos aguardando o clique no grid
+    bIsCubeMoving = false;     // Inicialmente, nenhum cubo est√° se movendo
     bIsMoving = false;
-
 }
 
 void AGridController::BeginPlay()
 {
     Super::BeginPlay();
 
-    // Add Input Mapping Context
+    // Adiciona o Input Mapping Context
     if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
     {
         Subsystem->AddMappingContext(DefaultMappingContext, 0);
@@ -48,7 +47,6 @@ void AGridController::Tick(float DeltaTime)
     }
 }
 
-
 bool AGridController::GetHitResultUnderCursorForGrid(FHitResult& HitResult)
 {
     return GetHitResultUnderCursor(ECC_Visibility, true, HitResult);
@@ -58,10 +56,10 @@ void AGridController::SetupInputComponent()
 {
     Super::SetupInputComponent();
 
-    // Set up action bindings
+    // Configura as a√ß√µes de input
     if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
     {
-        // Setup mouse input event
+        // Configura o evento de clique do mouse
         EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Triggered, this, &AGridController::OnLeftMouseClick);
     }
     else
@@ -75,15 +73,9 @@ void AGridController::OnLeftMouseClick()
     FHitResult HitResult;
     if (GetHitResultUnderCursorForGrid(HitResult))
     {
-        //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("CLICK"));
-        // Check if the hit is a cube
-        UStaticMeshComponent* HitCube = Cast<UStaticMeshComponent>(HitResult.GetComponent());
-
         // Verifica se estamos aguardando o clique no grid para mover o cubo
-        if (bIsAwaitingTarget &&  SelectedCube)
+        if (bIsAwaitingTarget && SelectedCube)
         {
-            GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("GRID"));
-            // Clique no grid apÛs selecionar o cubo: Define o destino
             TargetLocation = HitResult.ImpactPoint;
             MoveCubeToTarget(SelectedCube, TargetLocation);
 
@@ -91,23 +83,16 @@ void AGridController::OnLeftMouseClick()
                 PathfindingController = Cast<APathfindingController>(UGameplayStatics::GetActorOfClass(GetWorld(), APathfindingController::StaticClass()));
             PathfindingController->MarkBlockedNodes();
 
-            bIsCubeMoving = true; // O cubo est· em movimento
-
-            bIsAwaitingTarget = false; // N„o aguardamos mais o clique no grid
+            bIsCubeMoving = true; // O cubo est√° em movimento
+            bIsAwaitingTarget = false; // N√£o aguardamos mais o clique no grid
         }
         // Clique em um cubo: Seleciona o cubo
-        else if (HitCube && !bIsAwaitingTarget && !bIsCubeMoving)
+        else if (UStaticMeshComponent* HitCube = Cast<UStaticMeshComponent>(HitResult.GetComponent()))
         {
             if (HitCube->ComponentTags.Num() > 0 && HitCube->ComponentTags[0].ToString().StartsWith("Cube"))
             {
                 SelectCube(HitCube);
 
-                ATopDownCameraPawn* PlayerPawn = Cast<ATopDownCameraPawn>(GetPawn());
-                if (PlayerPawn)
-                {
-                    //PlayerPawn->SetCameraPivot(HitCube->GetOwner());
-                }
-                
                 // Inicia o timer para aguardar 1.5 segundos antes de permitir o clique no grid
                 GetWorld()->GetTimerManager().SetTimer(AwaitingTargetTimerHandle, this, &AGridController::EnableAwaitingTarget, 1.5f, false);
             }
@@ -117,29 +102,21 @@ void AGridController::OnLeftMouseClick()
 
 bool AGridController::GetHitResultOnGrid(FHitResult& OutHitResult)
 {
-    // Perform a line trace under the mouse cursor to get the hit location on the grid
+    // Realiza o trace para obter a localiza√ß√£o do hit no grid
     return GetHitResultUnderCursor(ECC_Visibility, true, OutHitResult);
 }
 
 void AGridController::UpdatePathAndMoveCube()
 {
-
     if (PathfinderInstance && GridInstance)
     {
-        // Calculate the path from start to end
+        // Calcula o caminho do in√≠cio ao fim
         TArray<FVector> Path = PathfinderInstance->FindPathArray(StartLocation, EndLocation);
 
-        // Optionally: Visualize the path
+        // Opcionalmente: Visualiza o caminho
         for (int32 i = 0; i < Path.Num() - 1; i++)
         {
             DrawDebugLine(GetWorld(), Path[i], Path[i + 1], FColor::Blue, false, 5.0f, 0, 5.0f);
-        }
-
-        // Move the cube along the path
-        if (Path.Num() > 0)
-        {
-            // Logic to move the cube to the final position (implement your movement logic here)
-            // You can interpolate along the path or just snap to the end point for simplicity
         }
     }
 }
@@ -155,8 +132,6 @@ void AGridController::SelectCube(UStaticMeshComponent* Cube)
 
 void AGridController::MoveCubeToTarget(UStaticMeshComponent* Cube, const FVector& Target)
 {
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("GRID"));
-
     if (PathfinderInstance == nullptr)
         PathfinderInstance = Cast<APathfinder>(UGameplayStatics::GetActorOfClass(GetWorld(), APathfinder::StaticClass()));
     if (GridInstance == nullptr)
@@ -166,18 +141,17 @@ void AGridController::MoveCubeToTarget(UStaticMeshComponent* Cube, const FVector
     {
         StartLocation = Cube->GetComponentLocation();
 
-        // Desenha a posiÁ„o inicial do cubo para depuraÁ„o
+        // Desenha a posi√ß√£o inicial do cubo para depura√ß√£o
         DrawDebugSphere(GetWorld(), StartLocation, 25.0f, 12, FColor::Red, false, 5.0f);
 
-        // Calcula o caminho entre a posiÁ„o inicial e o ponto alvo
+        // Calcula o caminho entre a posi√ß√£o inicial e o ponto alvo
         PathArray = PathfinderInstance->FindPathArray(StartLocation, Target);
 
         if (PathArray.Num() > 0)
         {
-            // Reseta o Ìndice de caminho e comeÁa o movimento do cubo
-            CurrentPathIndex = 0;
+            CurrentPathIndex = 0;  // Reseta o √≠ndice do caminho
             bIsMoving = true;
-            SelectedCube = Cube; // Define o cubo como o cubo selecionado para movimento
+            SelectedCube = Cube;   // Define o cubo selecionado para movimento
         }
     }
 }
@@ -188,37 +162,35 @@ void AGridController::MoveAlongPath(float DeltaTime)
     {
         // O cubo chegou ao final do caminho
         bIsMoving = false;
-        bIsCubeMoving = false; // O cubo chegou ao destino e agora podemos selecionar outro cubo
+        bIsCubeMoving = false; // O cubo chegou ao destino
         ChangeCubeColor(SelectedCube, FLinearColor::Blue); // Muda a cor do cubo para azul
         SelectedCube = nullptr; // Limpa o cubo selecionado
         return;
     }
 
-    ChangeCubeColor(SelectedCube, FLinearColor::Yellow);
+    ChangeCubeColor(SelectedCube, FLinearColor::Yellow); // Muda a cor do cubo enquanto se move
 
     FVector CurrentTarget = PathArray[CurrentPathIndex];
     FVector CurrentLocation = SelectedCube->GetComponentLocation();
 
-    // Calcula a direÁ„o e a dist‚ncia para o prÛximo nÛ
+    // Calcula a dire√ß√£o e a dist√¢ncia para o pr√≥ximo n√≥
     FVector Direction = (CurrentTarget - CurrentLocation).GetSafeNormal();
     float DistanceToTarget = FVector::Dist(CurrentLocation, CurrentTarget);
 
-    // Move o cubo em direÁ„o ao prÛximo nÛ
+    // Move o cubo em dire√ß√£o ao pr√≥ximo n√≥
     FVector NewLocation = CurrentLocation + Direction * MoveSpeed * DeltaTime;
 
-    // Se estamos muito perto do prÛximo nÛ, avanÁa para o prÛximo nÛ
+    // Se estamos perto o suficiente do pr√≥ximo n√≥, avan√ßamos para o pr√≥ximo
     if (DistanceToTarget <= MoveSpeed * DeltaTime)
     {
-        // Move o cubo diretamente para o prÛximo nÛ
         NewLocation = CurrentTarget;
         CurrentPathIndex++;
     }
-    PathfindingController->VisualizePath(PathArray);
 
-
+    PathfindingController->VisualizePath(PathArray); // Visualiza o caminho
     SelectedCube->SetWorldLocation(NewLocation);
 
-    // Desenha uma linha para visualizar o caminho
+    // Desenha uma linha para visualizar o movimento
     DrawDebugLine(GetWorld(), CurrentLocation, NewLocation, FColor::Red, false, 0.1f, 0, 5.0f);
 }
 
@@ -233,5 +205,5 @@ void AGridController::ChangeCubeColor(UStaticMeshComponent* Cube, const FLinearC
 
 void AGridController::EnableAwaitingTarget()
 {
-    bIsAwaitingTarget = true; // Agora podemos esperar o segundo clique no grid
+    bIsAwaitingTarget = true; // Agora podemos aguardar o segundo clique no grid
 }

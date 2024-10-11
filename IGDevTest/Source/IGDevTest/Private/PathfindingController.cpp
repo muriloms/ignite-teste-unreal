@@ -10,86 +10,76 @@
 #include "DrawDebugHelpers.h"
 #include "Engine/World.h"
 
-// Sets default values
+// Define os valores padrões para este ator
 APathfindingController::APathfindingController()
 {
     PrimaryActorTick.bCanEverTick = true;
 
-    DebugDraw = false;
+    DebugDraw = false;  // Depuração desabilitada por padrão
 
-
-    // Create StartPointCube and TargetPointCube
+    // Cria os cubos que representam os pontos de início e destino
     StartPointCube = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StartPointCube"));
     TargetPointCube = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TargetPointCube"));
 
-    // Attach to Root
+    // Anexa os cubos ao componente raiz
     RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
     StartPointCube->SetupAttachment(RootComponent);
     TargetPointCube->SetupAttachment(RootComponent);
-
-    // Assign default static mesh for cubes (assuming the mesh is in your project's assets)
-    //static ConstructorHelpers::FObjectFinder<UStaticMesh> CubeMesh(TEXT("/Game/StarterContent/Shapes/Shape_Cube.Shape_Cube"));
-
 }
 
-// Called when the game starts or when spawned
+// Função chamada quando o jogo começa ou o ator é gerado
 void APathfindingController::BeginPlay()
 {
     Super::BeginPlay();
 
-    // Spawn PathfindingGrid
+    // Instancia a grade de pathfinding
     if (PathfindingGridClass)
     {
         GridInstance = GetWorld()->SpawnActor<APathfindingGrid>(PathfindingGridClass, FVector::ZeroVector, FRotator::ZeroRotator);
     }
 
-    // Spawn Pathfinder
+    // Instancia o pathfinder
     if (PathfinderClass)
     {
         PathfinderInstance = GetWorld()->SpawnActor<APathfinder>(PathfinderClass, FVector::ZeroVector, FRotator::ZeroRotator);
     }
 
+    // Verifica se as instâncias e a malha dos cubos foram corretamente configuradas
     if (GridInstance == nullptr || PathfinderInstance == nullptr || CubeMesh == nullptr)
     {
         UE_LOG(LogTemp, Error, TEXT("Missing GridInstance, PathfinderInstance, or CubeMesh in the PathfindingController"));
         return;
     }
 
-    // Calcula a posi��o inicial do grid com base na posi��o do PathfindingController
+    // Define a localização inicial da grade com base na posição do controlador
     FVector StartLocation = GetActorLocation();
     GridInstance->SetActorLocation(StartLocation);
 
-    // Spawn cubes in the grid
+    // Gera os cubos na grade
     SpawnCubes();
 
-    // Marca os n�s bloqueados no grid
+    // Marca os nós bloqueados com base nos cubos
     MarkBlockedNodes();
 
-    // Set initial positions of Start and Target points
-    //StartPointCube->SetStaticMesh(CubeMesh);
-    //TargetPointCube->SetStaticMesh(CubeMesh);
-    //StartPointCube->SetWorldLocation(GridInstance->GetRandomLocationWithinGrid());
-    //TargetPointCube->SetWorldLocation(GridInstance->GetRandomLocationWithinGrid());
-
-
-    UpdatePathfinding(); // Calculate the initial path
+    // Calcula o caminho inicial
+    UpdatePathfinding();
 }
 
-// Called every frame
+// Função chamada a cada frame
 void APathfindingController::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-
-    // Update the pathfinding in real time if the start or target points move
-    //UpdatePathfinding();
+    // Atualiza o sistema de pathfinding em tempo real, se os pontos de início ou destino se moverem (comentado por enquanto)
+    // UpdatePathfinding();
 }
 
+// Marca os nós bloqueados no grid com base na posição dos cubos
 void APathfindingController::MarkBlockedNodes()
 {
     GridInstance->MarkBlockedNodes(CubeArray);
 }
 
-// Function to update pathfinding when cubes are moved
+// Atualiza o sistema de pathfinding quando os cubos são movidos
 void APathfindingController::UpdatePathfinding()
 {
     if (PathfinderInstance != nullptr && GridInstance != nullptr)
@@ -97,15 +87,15 @@ void APathfindingController::UpdatePathfinding()
         FVector StartLocation = StartPointCube->GetComponentLocation();
         FVector TargetLocation = TargetPointCube->GetComponentLocation();
 
-        // Get the path from the Pathfinder
+        // Obtém o caminho calculado pelo pathfinder
         CurrentPath = PathfinderInstance->FindPathArray(StartLocation, TargetLocation);
 
-        // Visualize the path
+        // Visualiza o caminho calculado
         VisualizePath(CurrentPath);
     }
 }
 
-// Visualize the path with debug lines
+// Visualiza o caminho calculado com linhas de depuração
 void APathfindingController::VisualizePath(const TArray<FVector>& Path)
 {
     if (Path.Num() == 0) return;
@@ -116,50 +106,48 @@ void APathfindingController::VisualizePath(const TArray<FVector>& Path)
     }
 }
 
-// Spawn cubes in the grid at random locations
+// Gera cubos em locais aleatórios dentro da grade
 void APathfindingController::SpawnCubes()
 {
     for (int32 i = 0; i < NumberOfCubes; i++)
     {
         UStaticMeshComponent* NewCube = NewObject<UStaticMeshComponent>(this);
 
-        // Atribui uma tag �nica ao cubo
+        // Atribui uma tag única ao cubo
         FString CubeTag = FString::Printf(TEXT("Cube"));
         NewCube->ComponentTags.Add(FName(*CubeTag));
 
+        // Define a malha e a localização do cubo
         NewCube->SetStaticMesh(CubeMesh);
         NewCube->SetWorldLocation(GridInstance->GetRandomLocationWithinGrid());
         NewCube->RegisterComponent();
         NewCube->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
 
+        // Adiciona o cubo ao array
         CubeArray.Add(NewCube);
     }
 }
 
-// Draw grid on the editor viewport
+// Desenha a grade no editor durante a construção do ator
 void APathfindingController::OnConstruction(const FTransform& Transform)
 {
     Super::OnConstruction(Transform);
-    
 
     if (DebugDraw)
     {
-        // Pega o tamanho do grid a partir de um FVector definido no BP (exemplo: GridDimensions)
-        FVector GridDimensions = FVector(50.f, 50.f, 0.0f); // Supondo que GridDimensions j� esteja configurado no BP
+        // Define o tamanho do grid (exemplo retirado do blueprint)
+        FVector GridDimensions = FVector(50.f, 50.f, 0.0f);
 
-        // Calcula os v�rtices do quadrado usando a localiza��o do PathfindingController e o GridDimensions
+        // Calcula os vértices do quadrado que representa o grid
         FVector TopLeft = GetActorLocation();
         FVector TopRight = TopLeft + FVector(GridDimensions.X, 0, 0);
         FVector BottomLeft = TopLeft + FVector(0, GridDimensions.Y, 0);
         FVector BottomRight = TopLeft + FVector(GridDimensions.X, GridDimensions.Y, 0);
 
-        // Desenha as quatro arestas do quadrado
+        // Desenha as arestas do grid
         DrawDebugLine(GetWorld(), TopLeft, TopRight, FColor::Blue, false, -1.0f, 0, 5.0f);
         DrawDebugLine(GetWorld(), TopRight, BottomRight, FColor::Blue, false, -1.0f, 0, 5.0f);
         DrawDebugLine(GetWorld(), BottomRight, BottomLeft, FColor::Blue, false, -1.0f, 0, 5.0f);
         DrawDebugLine(GetWorld(), BottomLeft, TopLeft, FColor::Blue, false, -1.0f, 0, 5.0f);
-
     }
-
-    
 }

@@ -17,227 +17,208 @@ APathfinder::APathfinder()
 
 }
 
-// Called when the game starts or when spawned
+// Função chamada quando o jogo começa ou o ator é gerado
 void APathfinder::BeginPlay()
 {
-	Super::BeginPlay();
+    Super::BeginPlay();
 
-	// Tenta encontrar o PathfindingGrid no mundo
-	TArray<AActor*> FoundGrids;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APathfindingGrid::StaticClass(), FoundGrids);
+    // Tenta encontrar o PathfindingGrid no mundo
+    TArray<AActor*> FoundGrids;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), APathfindingGrid::StaticClass(), FoundGrids);
 
-	if (FoundGrids.Num() > 0)
-	{
-		GridInstance = Cast<APathfindingGrid>(FoundGrids[0]);
-		UE_LOG(LogTemp, Warning, TEXT("Pathfinding Grid encontrado!"));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("Nenhum Pathfinding Grid encontrado no mundo!"));
-	}
-	
+    if (FoundGrids.Num() > 0)
+    {
+        GridInstance = Cast<APathfindingGrid>(FoundGrids[0]);
+        UE_LOG(LogTemp, Warning, TEXT("Pathfinding Grid encontrado!"));
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("Nenhum Pathfinding Grid encontrado no mundo!"));
+    }
 }
 
-// Called every frame
+// Função chamada a cada frame
 void APathfinder::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime);
-
+    Super::Tick(DeltaTime);
 }
 
+// Função que encontra o caminho de Start para End e retorna a próxima posição no caminho
 FVector APathfinder::FindPath(FVector Start, FVector End)
 {
-	PathfindingNode* StartNode = GridInstance->NodeFromLocation(Start);	// Start node of the agent
-	PathfindingNode* EndNode = GridInstance->NodeFromLocation(End);	// End goal node of the agent
+    PathfindingNode* StartNode = GridInstance->NodeFromLocation(Start); // Nó de início
+    PathfindingNode* EndNode = GridInstance->NodeFromLocation(End); // Nó de destino
 
+    if (StartNode == nullptr) return Start; // Se o nó inicial for inválido, retorna a posição inicial
 
+    TArray<PathfindingNode*> OpenSet; // Nós a serem verificados
+    TArray<PathfindingNode*> ClosedSet; // Nós já verificados
 
-	if (StartNode == nullptr) return Start;
+    OpenSet.Add(StartNode); // Adiciona o nó inicial ao conjunto de abertos
 
-	TArray<PathfindingNode*> OpenSet; // Nodes to be checked
-	TArray<PathfindingNode*> ClosedSet; // Nodes already checked
+    while (OpenSet.Num() > 0) // Continua o algoritmo enquanto houver nós a serem processados
+    {
+        PathfindingNode* CurrentNode = OpenSet[0];
 
-	OpenSet.Add(StartNode); // Load our intial Node into the algorithm
+        for (int i = 0; i < OpenSet.Num(); i++)
+        {
+            if (OpenSet[i] != nullptr && OpenSet[i]->FCost() <= CurrentNode->FCost() && OpenSet[i]->HCost < CurrentNode->HCost)
+            {
+                CurrentNode = OpenSet[i]; // Define o nó atual como o mais próximo do destino
+            }
+        }
 
-	while (OpenSet.Num()) // While there is still nodes to be checked keep running the algorithm
-	{
+        OpenSet.Remove(CurrentNode); // Remove o nó atual do OpenSet
+        ClosedSet.Add(CurrentNode); // Adiciona o nó ao ClosedSet
 
-		PathfindingNode* CurrentNode = OpenSet[0]; // Run each cycle from the beginning element of the open list as the previous first element will have been processed and place into the closed list
+        if (CurrentNode == EndNode)
+        {
+            return RetracePath(StartNode, EndNode); // Caminho completo, traça o caminho de volta
+        }
 
-		for (int i = 0; i < OpenSet.Num(); i++)
-		{
-			if (OpenSet[i] != nullptr && OpenSet[i]->FCost() <= CurrentNode->FCost() && OpenSet[i]->HCost < CurrentNode->HCost)
-			{
-				CurrentNode = OpenSet[i]; // Set Current node to be the closest node to the target
-			}
-		}
-		//UKismetSystemLibrary::DrawDebugBox(this, GridInstance->LocationFromNode(CurrentNode), FVector::OneVector*GridInstance->NodeSize / 1, FLinearColor::Green, FRotator::ZeroRotator, 0);
-		OpenSet.Remove(CurrentNode); // Once node has been processed remove it from the OpenSet
-		ClosedSet.Add(CurrentNode); // Then add it to the closed set
+        // Obtém os nós vizinhos
+        TArray<PathfindingNode*> Neighbours = GridInstance->GetNeighbourNodes(CurrentNode);
 
-		if (CurrentNode == EndNode)
-		{
-			int red = 1;
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::FromInt(red));
-			return RetracePath(StartNode, EndNode); // If the CurrentNode is also the EndNode then we have reached out destination in the algorithm
-		}
+        for (int i = 0; i < Neighbours.Num(); i++)
+        {
+            if (Neighbours[i] == nullptr || ClosedSet.Contains(Neighbours[i]))
+            {
+                continue; // Ignora nós nulos ou já verificados
+            }
 
-		TArray<PathfindingNode*> Neighbours = GridInstance->GetNeighbourNodes(CurrentNode); // Gather CurrentNodes neighbours into the list
+            float NewMovementCostToNeighbour = CurrentNode->GCost + GetDistance(CurrentNode, Neighbours[i]);
+            if (NewMovementCostToNeighbour < Neighbours[i]->GCost || !OpenSet.Contains(Neighbours[i]))
+            {
+                Neighbours[i]->GCost = NewMovementCostToNeighbour;
+                Neighbours[i]->HCost = GetDistance(Neighbours[i], EndNode);
+                Neighbours[i]->ParentNode = CurrentNode;
 
-		for (int i = 0; i < Neighbours.Num(); i++)
-		{
-			if (Neighbours[i] == nullptr || ClosedSet.Contains(Neighbours[i]))
-			{
-				continue;
-			}
+                if (!OpenSet.Contains(Neighbours[i]))
+                {
+                    OpenSet.Add(Neighbours[i]);
+                }
+            }
+        }
+    }
 
-			float NewMovementCostToNeighbour = CurrentNode->GCost + GetDistance(CurrentNode, Neighbours[i]);
-			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::FromInt(NewMovementCostToNeighbour));
-			if (NewMovementCostToNeighbour < Neighbours[i]->GCost || !OpenSet.Contains(Neighbours[i]))
-			{
-				Neighbours[i]->GCost = NewMovementCostToNeighbour;
-				Neighbours[i]->HCost = GetDistance(Neighbours[i], EndNode);
-				Neighbours[i]->ParentNode = CurrentNode;
-				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::FromInt(Neighbours[i]->GCost));
-				if (!OpenSet.Contains(Neighbours[i]))
-				{
-					OpenSet.Add(Neighbours[i]);
-				}
-			}
-
-		}
-
-	}
-
-
-
-	return GridInstance->LocationFromNode(StartNode);	// No path found
+    return GridInstance->LocationFromNode(StartNode); // Retorna à posição inicial se não houver caminho
 }
 
+// Função que encontra o caminho de Start para End e retorna um array de posições
 TArray<FVector> APathfinder::FindPathArray(FVector Start, FVector End)
 {
-	PathfindingNode* StartNode = GridInstance->NodeFromLocation(Start);
-	PathfindingNode* EndNode = GridInstance->NodeFromLocation(End);
+    PathfindingNode* StartNode = GridInstance->NodeFromLocation(Start);
+    PathfindingNode* EndNode = GridInstance->NodeFromLocation(End);
 
-	if (StartNode == nullptr || EndNode == nullptr)
-	{
-		return {}; // Return empty if nodes are not valid
-	}
+    if (StartNode == nullptr || EndNode == nullptr)
+    {
+        return {}; // Retorna vazio se os nós forem inválidos
+    }
 
-	TArray<PathfindingNode*> OpenSet;
-	TArray<PathfindingNode*> ClosedSet;
+    TArray<PathfindingNode*> OpenSet;
+    TArray<PathfindingNode*> ClosedSet;
 
-	OpenSet.Add(StartNode);
+    OpenSet.Add(StartNode);
 
-	while (OpenSet.Num() > 0)
-	{
-		PathfindingNode* CurrentNode = OpenSet[0];
+    while (OpenSet.Num() > 0)
+    {
+        PathfindingNode* CurrentNode = OpenSet[0];
 
-		for (int i = 0; i < OpenSet.Num(); i++)
-		{
-			if (OpenSet[i]->FCost() < CurrentNode->FCost() ||
-				(OpenSet[i]->FCost() == CurrentNode->FCost() && OpenSet[i]->HCost < CurrentNode->HCost))
-			{
-				CurrentNode = OpenSet[i];
-			}
-		}
+        for (int i = 0; i < OpenSet.Num(); i++)
+        {
+            if (OpenSet[i]->FCost() < CurrentNode->FCost() || (OpenSet[i]->FCost() == CurrentNode->FCost() && OpenSet[i]->HCost < CurrentNode->HCost))
+            {
+                CurrentNode = OpenSet[i];
+            }
+        }
 
-		OpenSet.Remove(CurrentNode);
-		ClosedSet.Add(CurrentNode);
+        OpenSet.Remove(CurrentNode);
+        ClosedSet.Add(CurrentNode);
 
-		if (CurrentNode == EndNode)
-		{
-			return RetracePathArray(StartNode, EndNode);
-		}
+        if (CurrentNode == EndNode)
+        {
+            return RetracePathArray(StartNode, EndNode); // Retorna o caminho completo como array de posições
+        }
 
-		TArray<PathfindingNode*> Neighbours = GridInstance->GetNeighbourNodes(CurrentNode);
+        TArray<PathfindingNode*> Neighbours = GridInstance->GetNeighbourNodes(CurrentNode);
 
-		for (PathfindingNode* Neighbour : Neighbours)
-		{
-			// Verifica se o n� est� bloqueado por um cubo
-			if (ClosedSet.Contains(Neighbour) || Neighbour == nullptr || GridInstance->IsNodeBlocked(Neighbour))
-			{
-				continue; // Skip this neighbour if it's blocked by a cube or already in the closed set
-			}
+        for (PathfindingNode* Neighbour : Neighbours)
+        {
+            // Verifica se o nó está bloqueado ou já verificado
+            if (ClosedSet.Contains(Neighbour) || Neighbour == nullptr || GridInstance->IsNodeBlocked(Neighbour))
+            {
+                continue;
+            }
 
-			float NewCost = CurrentNode->GCost + GetDistance(CurrentNode, Neighbour);
-			if (NewCost < Neighbour->GCost || !OpenSet.Contains(Neighbour))
-			{
-				Neighbour->GCost = NewCost;
-				Neighbour->HCost = GetDistance(Neighbour, EndNode);
-				Neighbour->ParentNode = CurrentNode;
+            float NewCost = CurrentNode->GCost + GetDistance(CurrentNode, Neighbour);
+            if (NewCost < Neighbour->GCost || !OpenSet.Contains(Neighbour))
+            {
+                Neighbour->GCost = NewCost;
+                Neighbour->HCost = GetDistance(Neighbour, EndNode);
+                Neighbour->ParentNode = CurrentNode;
 
-				// Ensure the neighbour is added to the open set if not already present
-				if (!OpenSet.Contains(Neighbour))
-				{
-					OpenSet.Add(Neighbour);
-				}
-			}
-		}
-	}
+                if (!OpenSet.Contains(Neighbour))
+                {
+                    OpenSet.Add(Neighbour);
+                }
+            }
+        }
+    }
 
-	return {}; // Return empty if no path is found
+    return {}; // Retorna vazio se nenhum caminho for encontrado
 }
 
+// Função que calcula a distância entre dois nós baseado na heurística
 float APathfinder::GetDistance(PathfindingNode* A, PathfindingNode* B)
 {
+    if (Heuristic == EHeuristic::Heuristic_Manhatten)
+    {
+        FVector ALoc = GridInstance->LocationFromNode(A);
+        FVector BLoc = GridInstance->LocationFromNode(B);
+        FVector Loc = ALoc - BLoc;
 
-	if (Heuristic == EHeuristic::Heuristic_Manhatten)
-	{
+        return UKismetMathLibrary::Abs(Loc.X) + UKismetMathLibrary::Abs(Loc.Y) + UKismetMathLibrary::Abs(Loc.Z);
+    }
+    else if (Heuristic == EHeuristic::Heuristic_Euclidean)
+    {
+        return FVector::Distance(GridInstance->LocationFromNode(A), GridInstance->LocationFromNode(B));
+    }
 
-		FVector ALoc, BLoc, Loc;
-		ALoc = GridInstance->LocationFromNode(A);
-		BLoc = GridInstance->LocationFromNode(B);
-
-		Loc = ALoc - BLoc;
-
-		return UKismetMathLibrary::Abs(Loc.X) + UKismetMathLibrary::Abs(Loc.Y) + UKismetMathLibrary::Abs(Loc.Z);
-	}
-	else if (Heuristic == EHeuristic::Heuristic_Euclidean)
-	{
-		return FVector::Distance(GridInstance->LocationFromNode(A), GridInstance->LocationFromNode(B));
-
-	}
-
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("HEURISTIC MISSING, RETURNING 0 DISTANCE"));
-	return 0;
-
+    UE_LOG(LogTemp, Error, TEXT("HEURISTIC MISSING, RETURNING 0 DISTANCE"));
+    return 0;
 }
 
+// Função que traça o caminho de volta a partir do nó inicial até o nó final
 FVector APathfinder::RetracePath(PathfindingNode* StartNode, PathfindingNode* EndNode)
 {
+    if (StartNode == EndNode)
+    {
+        return GridInstance->LocationFromNode(StartNode);
+    }
 
-	if (StartNode == EndNode)
-	{
-		return GridInstance->LocationFromNode(StartNode);
-	}
+    TArray<PathfindingNode*> Path;
+    PathfindingNode* CurrentNode = EndNode;
 
-	TArray<PathfindingNode*> Path;
+    while (CurrentNode != StartNode)
+    {
+        Path.Add(CurrentNode);
+        CurrentNode = CurrentNode->ParentNode;
+    }
 
-	PathfindingNode* CurrentNode = EndNode;
+    Algo::Reverse(Path); // Inverte o caminho para que comece no StartNode
 
-	while (CurrentNode != StartNode)
-	{
-		Path.Add(CurrentNode);
-		CurrentNode = CurrentNode->ParentNode;
+    for (int i = 0; i < Path.Num(); i++)
+    {
+        UKismetSystemLibrary::DrawDebugBox(this, GridInstance->LocationFromNode(Path[i]), FVector::OneVector * GridInstance->NodeSize / 2.3f, FLinearColor::Green, FRotator::ZeroRotator, 0);
+    }
 
-	}
-
-	Algo::Reverse(Path);
-	for (int i = 0; i < Path.Num(); i++)
-	{
-		UKismetSystemLibrary::DrawDebugBox(this, GridInstance->LocationFromNode(Path[i]), FVector::OneVector * GridInstance->NodeSize / 2.3f, FLinearColor::Green, FRotator::ZeroRotator, 0);
-	}
-
-	//if (Debug) DrawPath(Path);
-
-	return GridInstance->LocationFromNode(Path[1]);
+    return GridInstance->LocationFromNode(Path[1]); // Retorna a próxima posição
 }
 
-
+// Função que traça o caminho de volta como array de posições
 TArray<FVector> APathfinder::RetracePathArray(PathfindingNode* StartNode, PathfindingNode* EndNode)
 {
-    TArray<FVector> PathPositions; // Array que armazenar� as posi��es do caminho
+    TArray<FVector> PathPositions;
 
     if (StartNode == EndNode)
     {
@@ -245,52 +226,45 @@ TArray<FVector> APathfinder::RetracePathArray(PathfindingNode* StartNode, Pathfi
         return PathPositions;
     }
 
-    TArray<PathfindingNode*> PathNodes; // Array que armazenar� os n�s do caminho
+    TArray<PathfindingNode*> PathNodes;
     PathfindingNode* CurrentNode = EndNode;
 
-    // Tra�ar o caminho de volta at� o n� inicial
     while (CurrentNode != StartNode)
     {
         PathNodes.Add(CurrentNode);
         CurrentNode = CurrentNode->ParentNode;
     }
 
-    PathNodes.Add(StartNode); // Adicionar o n� inicial
-
-    // Inverter a ordem dos n�s para que o caminho comece no StartNode
+    PathNodes.Add(StartNode);
     Algo::Reverse(PathNodes);
 
-    // Converter os n�s em posi��es (FVector)
     for (PathfindingNode* Node : PathNodes)
     {
         FVector NodeLocation = GridInstance->LocationFromNode(Node);
-        PathPositions.Add(NodeLocation); // Adiciona a posi��o correspondente do n�
+        PathPositions.Add(NodeLocation);
 
-        // Desenhar a caixa de debug para cada posi��o no caminho
         UKismetSystemLibrary::DrawDebugBox(this, NodeLocation, FVector::OneVector * GridInstance->NodeSize / 2.3f, FLinearColor::Green, FRotator::ZeroRotator, 0);
     }
 
-    return PathPositions; // Retorna o caminho completo como um array de posi��es
+    return PathPositions; // Retorna o caminho como array de posições
 }
 
-
+// Função para mapear uma localização para um nó
 PathfindingNode* APathfinder::NodeFromLocation(FVector Location)
 {
-	// L�gica para mapear a localiza��o para um n� na grid
-	return GridInstance->NodeFromLocation(Location);  // Certifique-se de que GridInstance tenha este m�todo
+    return GridInstance->NodeFromLocation(Location); // Mapeia a localização para um nó na grade
 }
 
+// Função que verifica se um cubo está bloqueando o caminho
 bool APathfinder::IsCubeBlockingPath(FVector Location)
 {
-	for (UStaticMeshComponent* Cube : CubeArray)
-	{
-		// Verifica se o cubo est� suficientemente pr�ximo da localiza��o atual para ser considerado um obst�culo
-		if (FVector::Dist(Cube->GetComponentLocation(), Location) < (GridInstance->NodeSize * 0.5f))
-		{
-			return true; // O cubo est� bloqueando o caminho
-		}
-	}
-	return false;
+    for (UStaticMeshComponent* Cube : CubeArray)
+    {
+        // Verifica se há um cubo bloqueando o caminho na localização fornecida
+        if (FVector::Dist(Cube->GetComponentLocation(), Location) < (GridInstance->NodeSize * 0.5f))
+        {
+            return true; // O cubo está bloqueando o caminho
+        }
+    }
+    return false;
 }
-
-

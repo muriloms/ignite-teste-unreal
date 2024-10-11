@@ -27,62 +27,64 @@ protected:
     virtual void BeginPlay() override;
 
 public:
-    // Called every frame
+    // Função chamada a cada frame
     virtual void Tick(float DeltaTime) override;
 
-    // References to the pathfinding components
+    // Referências para as classes de pathfinding
     UPROPERTY(EditAnywhere, Category = "Pathfinding")
-    TSubclassOf<APathfindingGrid> PathfindingGridClass;
+    TSubclassOf<APathfindingGrid> PathfindingGridClass;  // Classe da grade de pathfinding
 
     UPROPERTY(EditAnywhere, Category = "Pathfinding")
-    TSubclassOf<APathfinder> PathfinderClass;
+    TSubclassOf<APathfinder> PathfinderClass;  // Classe do pathfinder
 
+    // Instâncias da grade de pathfinding e do pathfinder
     UPROPERTY()
     APathfindingGrid* GridInstance;
 
     UPROPERTY()
     APathfinder* PathfinderInstance;
 
-    // Number of cubes to spawn
+    // Número de cubos a serem gerados
     UPROPERTY(EditAnywhere, Category = "Pathfinding")
     int32 NumberOfCubes = 5;
 
-    // Reference to the cubes
+    // Referência aos componentes de malha estática dos cubos
     UPROPERTY(EditAnywhere, Category = "Pathfinding")
     TArray<UStaticMeshComponent*> CubeArray;
 
-    // Static mesh for the cubes
+    // Malha estática usada pelos cubos
     UPROPERTY(EditAnywhere, Category = "Pathfinding")
     UStaticMesh* CubeMesh;
 
-    // Start and Target points represented by static mesh cubes
+    // Pontos de início e alvo representados por cubos de malha estática
     UPROPERTY(EditAnywhere)
     UStaticMeshComponent* StartPointCube;
 
     UPROPERTY(EditAnywhere)
     UStaticMeshComponent* TargetPointCube;
 
-    // Function to update the pathfinding
+    // Função que atualiza o sistema de pathfinding
     UFUNCTION(BlueprintCallable, Category = "Pathfinding")
     void UpdatePathfinding();
 
-    // Debug function to visualize the path
+    // Função de depuração para visualizar o caminho calculado
     void VisualizePath(const TArray<FVector>& Path);
 
-
-    // Function to spawn cubes in the grid
+    // Função que gera cubos na grade
     void SpawnCubes();
 
+    // Função que marca os nós bloqueados na grade
     void MarkBlockedNodes();
 
+    // Flag para desenhar a grade no modo de depuração
     UPROPERTY(EditAnywhere, Category = Grid)
     bool DebugDraw;
 
-    // Draw grid in the editor viewport
+    // Função chamada ao construir o ator no editor (desenha a grade)
     virtual void OnConstruction(const FTransform& Transform) override;
 
 private:
-
-    // Variable to store the current path
+    // Variável que armazena o caminho atual calculado
     TArray<FVector> CurrentPath;
+
 };

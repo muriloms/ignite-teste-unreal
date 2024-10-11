@@ -4,20 +4,29 @@
 
 #include "CoreMinimal.h"
 
-/**
- * 
- */
+
+// Classe que representa um nó dentro da grade de Pathfinding
 class IGDEVTEST_API PathfindingNode
 {
 public:
-	PathfindingNode(int GridXPos, int GridYPos, int GridZPos);
-	~PathfindingNode();
+    // Construtor que inicializa o nó com sua posição na grade (X, Y, Z)
+    PathfindingNode(int GridXPos, int GridYPos, int GridZPos);
 
+    // Destrutor
+    ~PathfindingNode();
 
+    // Ponteiro para o nó pai (usado para traçar o caminho)
+    PathfindingNode* ParentNode;
 
-	PathfindingNode* ParentNode;
-	int GridX, GridY, GridZ;
-	int GCost = 0; // Cost so far
-	int HCost = 0; // Heuristic 
-	float FCost(); // Total cost
+    // Posições do nó na grade
+    int GridX, GridY, GridZ;
+
+    // Custo G: Custo acumulado desde o ponto inicial até este nó
+    int GCost = 0;
+
+    // Custo H: Heurística estimada do nó até o destino
+    int HCost = 0;
+
+    // Função para calcular o custo total (FCost = GCost + HCost)
+    float FCost();
 };

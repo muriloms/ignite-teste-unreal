@@ -22,49 +22,55 @@ class IGDEVTEST_API APathfinder : public AActor
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
-	APathfinder();
+    // Define os valores padrões para as propriedades deste ator
+    APathfinder();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Enum)
-	EHeuristic Heuristic;
+    // Define o tipo de heurística a ser utilizado
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Enum)
+    EHeuristic Heuristic;
 
-	UFUNCTION(BlueprintCallable, Category = "AStar")
-	FVector FindPath(FVector Start, FVector End);
+    // Função para encontrar o caminho entre dois pontos e retornar a posição final
+    UFUNCTION(BlueprintCallable, Category = "AStar")
+    FVector FindPath(FVector Start, FVector End);
 
-	UFUNCTION(BlueprintCallable, Category = "AStar")
-	TArray<FVector> FindPathArray(FVector Start, FVector End);
+    // Função para encontrar o caminho entre dois pontos e retornar um array de posições
+    UFUNCTION(BlueprintCallable, Category = "AStar")
+    TArray<FVector> FindPathArray(FVector Start, FVector End);
 
-	//UFUNCTION(BlueprintCallable, Category = "Navigation-GL")
-		//void DrawPath(TArray<PathfindingNode*> Path);
+    // Função para traçar o caminho de volta a partir do nó inicial até o nó final (retorna a posição final)
+    FVector RetracePath(PathfindingNode* StartNode, PathfindingNode* EndNode);
 
-	FVector RetracePath(PathfindingNode* StartNode, PathfindingNode* EndNode);
-	TArray<FVector> RetracePathArray(PathfindingNode* StartNode, PathfindingNode* EndNode);
+    // Função para traçar o caminho de volta a partir do nó inicial até o nó final (retorna um array de posições)
+    TArray<FVector> RetracePathArray(PathfindingNode* StartNode, PathfindingNode* EndNode);
 
-	float GetDistance(PathfindingNode* A, PathfindingNode* B);
+    // Calcula a distância entre dois nós
+    float GetDistance(PathfindingNode* A, PathfindingNode* B);
 
-	// M�todo para obter o n� a partir de uma localiza��o
-	PathfindingNode* NodeFromLocation(FVector Location);
+    // Método para obter um nó da grade a partir de uma localização específica
+    PathfindingNode* NodeFromLocation(FVector Location);
 
-	// Nova vari�vel para armazenar os cubos instanciados
-	UPROPERTY(EditAnywhere, Category = "Pathfinding")
-	TArray<UStaticMeshComponent*> CubeArray;
+    // Array que armazena os cubos instanciados
+    UPROPERTY(EditAnywhere, Category = "Pathfinding")
+    TArray<UStaticMeshComponent*> CubeArray;
 
-	// M�todo para instanciar cubos dentro do grid
-	bool IsCubeBlockingPath(FVector Location);
+    // Método que verifica se há um cubo bloqueando o caminho em uma determinada localização
+    bool IsCubeBlockingPath(FVector Location);
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+    // Função chamada quando o jogo começa ou o ator é gerado
+    virtual void BeginPlay() override;
 
 public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+    // Função chamada a cada frame
+    virtual void Tick(float DeltaTime) override;
 
+    // Referência para a instância da grade de pathfinding
+    UPROPERTY(EditAnywhere, Category = Pathfinding)
+    APathfindingGrid* GridInstance;
 
-	UPROPERTY(EditAnywhere, Category = Pathfinding)
-	APathfindingGrid* GridInstance;
+    // Flag para habilitar/desabilitar depuração
+    UPROPERTY(EditAnywhere, Category = Pathfinding)
+    bool Debug;
 
-	UPROPERTY(EditAnywhere, Category = Pathfinding)
-	bool Debug;
 
 };

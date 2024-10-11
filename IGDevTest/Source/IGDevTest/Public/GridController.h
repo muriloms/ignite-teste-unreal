@@ -31,64 +31,79 @@ protected:
 
 public:
 
-    // Called every frame
+    // Função chamada a cada frame
     virtual void Tick(float DeltaTime) override;
 
-    // Click handling methods
+    // Métodos para manipulação de cliques
     UFUNCTION()
     void OnLeftMouseClick();
 
-    // Pathfinding related
+    // Propriedades relacionadas ao pathfinding
     UPROPERTY(EditAnywhere, Category = "Pathfinding")
-    APathfindingGrid* GridInstance;
+    APathfindingGrid* GridInstance;  // Instância da grade de pathfinding
 
     UPROPERTY(EditAnywhere, Category = "Pathfinding")
-    APathfinder* PathfinderInstance;
+    APathfinder* PathfinderInstance;  // Instância do pathfinder
 
-    APathfindingController* PathfindingController;
+    APathfindingController* PathfindingController;  // Controlador do pathfinding
 
 private:
 
-    // Input action for mouse click
+    // Ação de input para o clique do mouse
     UPROPERTY(EditAnywhere, Category = "Input")
     UInputAction* SetDestinationClickAction;
 
     UPROPERTY(EditAnywhere, Category = "Input")
     UInputMappingContext* DefaultMappingContext;
 
-    // Helper function to get hit location on the grid
+    // Função auxiliar para obter a localização do hit na grade
     bool GetHitResultOnGrid(FHitResult& OutHitResult);
 
-    FVector StartLocation;
-    FVector EndLocation;
-    bool bIsStartSet;
+    FVector StartLocation;  // Localização de início
+    FVector EndLocation;    // Localização de destino
+    bool bIsStartSet;       // Verifica se o ponto inicial está definido
 
-    // Function to update the path and move the cube
+    // Função para atualizar o caminho e mover o cubo
     void UpdatePathAndMoveCube();
 
-
+    // Componente do cubo selecionado
     UStaticMeshComponent* SelectedCube;
+
+    // Localização de destino do cubo
     FVector TargetLocation;
 
+    // Seleciona o cubo a ser movido
     void SelectCube(UStaticMeshComponent* Cube);
+
+    // Move o cubo para a localização de destino
     void MoveCubeToTarget(UStaticMeshComponent* Cube, const FVector& Target);
+
+    // Altera a cor do cubo
     void ChangeCubeColor(UStaticMeshComponent* Cube, const FLinearColor& NewColor);
 
-    // Helper method to trace objects under the mouse
+    // Método auxiliar para traçar objetos sob o cursor do mouse
     bool GetHitResultUnderCursorForGrid(FHitResult& HitResult);
 
-
+    // Array de posições do caminho calculado
     TArray<FVector> PathArray;
-    int32 CurrentPathIndex;
-    bool bIsAwaitingTarget;
-    bool bIsMoving;
-    bool bIsCubeMoving;
-    float MoveSpeed;
 
-    // Move o cubo ao longo do caminho
+    // Índice da posição atual no caminho
+    int32 CurrentPathIndex;
+
+    // Flags de controle de estado do movimento
+    bool bIsAwaitingTarget;  // Verifica se está aguardando o destino
+    bool bIsMoving;          // Verifica se o cubo está em movimento
+    bool bIsCubeMoving;      // Verifica se um cubo está sendo movido
+    float MoveSpeed;         // Velocidade de movimento do cubo
+
+    // Função para mover o cubo ao longo do caminho
     void MoveAlongPath(float DeltaTime);
 
-    FTimerHandle AwaitingTargetTimerHandle; // Gerencia o timer para o delay
+    // Gerenciador de timer para aguardar o destino
+    FTimerHandle AwaitingTargetTimerHandle;
+    
+    // Habilita o estado de aguardo de um destino
     void EnableAwaitingTarget();
+
 	
 };

@@ -1,0 +1,30 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "x:\\_projetos\\game\\ignite-teste-unreal\\igdevtest\\source\\igdevtest\\private\\pathfindingcontroller.cpp",
+        "ProvidedModule": "",
+        "PCH": "x:\\_projetos\\game\\ignite-teste-unreal\\igdevtest\\intermediate\\build\\win64\\x64\\igdevtesteditor\\development\\engine\\sharedpch.engine.cpp20.h.pch",
+        "Includes": [
+            "x:\\_projetos\\game\\ignite-teste-unreal\\igdevtest\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\igdevtest\\definitions.igdevtest.h",
+            "x:\\_projetos\\game\\ignite-teste-unreal\\igdevtest\\source\\igdevtest\\public\\pathfindingcontroller.h",
+            "x:\\_projetos\\game\\ignite-teste-unreal\\igdevtest\\source\\igdevtest\\public\\pathfinder.h",
+            "x:\\_projetos\\game\\ignite-teste-unreal\\igdevtest\\source\\igdevtest\\public\\pathfindinggrid.h",
+            "x:\\_projetos\\game\\ignite-teste-unreal\\igdevtest\\source\\igdevtest\\public\\pathfindingnode.h",
+            "x:\\_projetos\\game\\ignite-teste-unreal\\igdevtest\\intermediate\\build\\win64\\unrealeditor\\inc\\igdevtest\\uht\\pathfindinggrid.generated.h",
+            "x:\\_projetos\\game\\ignite-teste-unreal\\igdevtest\\intermediate\\build\\win64\\unrealeditor\\inc\\igdevtest\\uht\\pathfinder.generated.h",
+            "x:\\_projetos\\game\\ignite-teste-unreal\\igdevtest\\intermediate\\build\\win64\\unrealeditor\\inc\\igdevtest\\uht\\pathfindingcontroller.generated.h",
+            "x:\\program files\\ue_5.3\\engine\\source\\runtime\\engine\\classes\\kismet\\gameplaystatics.h",
+            "x:\\program files\\ue_5.3\\engine\\source\\runtime\\engine\\classes\\kismet\\kismetsystemlibrary.h",
+            "x:\\program files\\ue_5.3\\engine\\source\\runtime\\coreuobject\\public\\uobject\\propertyaccessutil.h",
+            "x:\\program files\\ue_5.3\\engine\\source\\runtime\\coreuobject\\public\\assetregistry\\arfilter.h",
+            "x:\\program files\\ue_5.3\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\kismetsystemlibrary.generated.h",
+            "x:\\program files\\ue_5.3\\engine\\source\\runtime\\engine\\classes\\sound\\dialoguetypes.h",
+            "x:\\program files\\ue_5.3\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\dialoguetypes.generated.h",
+            "x:\\program files\\ue_5.3\\engine\\source\\runtime\\engine\\classes\\kismet\\gameplaystaticstypes.h",
+            "x:\\program files\\ue_5.3\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\gameplaystaticstypes.generated.h",
+            "x:\\program files\\ue_5.3\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\gameplaystatics.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

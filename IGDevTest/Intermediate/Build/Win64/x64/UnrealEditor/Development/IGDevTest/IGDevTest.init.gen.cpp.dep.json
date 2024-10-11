@@ -1,0 +1,13 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "x:\\_projetos\\game\\ignite-teste-unreal\\igdevtest\\intermediate\\build\\win64\\unrealeditor\\inc\\igdevtest\\uht\\igdevtest.init.gen.cpp",
+        "ProvidedModule": "",
+        "PCH": "x:\\_projetos\\game\\ignite-teste-unreal\\igdevtest\\intermediate\\build\\win64\\x64\\igdevtesteditor\\development\\engine\\sharedpch.engine.cpp20.h.pch",
+        "Includes": [
+            "x:\\_projetos\\game\\ignite-teste-unreal\\igdevtest\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\igdevtest\\definitions.igdevtest.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

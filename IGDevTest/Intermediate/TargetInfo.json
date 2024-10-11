@@ -1,0 +1,14 @@
+{
+	"Targets": [
+		{
+			"Name": "IGDevTest",
+			"Path": "..\\Source\\IGDevTest.Target.cs",
+			"Type": "Game"
+		},
+		{
+			"Name": "IGDevTestEditor",
+			"Path": "..\\Source\\IGDevTestEditor.Target.cs",
+			"Type": "Editor"
+		}
+	]
+}

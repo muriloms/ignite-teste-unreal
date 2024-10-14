@@ -42,7 +42,7 @@ A câmera fornece uma visão top-down e pode ser rotacionada lateralmente em inc
 
 ### Manipulação de Entrada
 - **Clique com o Botão Esquerdo do Mouse**: O jogador clica em qualquer mesh estático, ativando o sistema de pathfinding para mover o personagem até o local clicado enquanto evita obstáculos.
-- **Rotação da Câmera**: A câmera pode ser rotacionada lateralmente em incrementos de 90º ao redor do personagem para proporcionar uma melhor visibilidade de diferentes ângulos.
+- **Rotação da Câmera**: O jogador clica com o botão Direito, a câmera pode ser rotacionada lateralmente em incrementos de 90º ao redor do personagem para proporcionar uma melhor visibilidade de diferentes ângulos.
 
 ### Dependências
 - **Unreal Engine 5**: O projeto foi desenvolvido utilizando Unreal Engine 5, aproveitando seu sistema de input aprimorado, mapeamento de entrada e física para pathfinding e movimento.
@@ -54,7 +54,7 @@ Para executar o projeto, siga os passos abaixo:
 
 1. Clone o repositório:
     ```bash
-    git clone https://github.com/seu-usuario/sistema-escalada-personagem.git
+    git clone https://github.com/muriloms/ignite-teste-unreal
     ```
 
 2. Abra o projeto no **Unreal Engine 5**.
@@ -89,4 +89,4 @@ Para executar o projeto, siga os passos abaixo:
 
 ---
 
-**Nota:** Este projeto foi desenvolvido como parte de um teste técnico para uma vaga de programador de gameplay. Ele demonstra experiência em **Unreal Engine** e **programação em C++** por meio da implementação de um sistema robusto de pathfinding e movimento em um ambiente 3D.
+**Nota:** Este projeto foi desenvolvido como parte de um teste técnico para uma vaga de programador de gameplay. Ele demonstra experiência em **Unreal Engine** e **programação em C++** por meio da implementação de um sistema de pathfinding e movimento em um ambiente 3D.

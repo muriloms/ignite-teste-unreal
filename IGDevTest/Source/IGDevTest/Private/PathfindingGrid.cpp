@@ -29,7 +29,6 @@ void APathfindingGrid::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	DebugGrid();
-	//UKismetSystemLibrary::DrawDebugBox(this, GetActorLocation() + FVector(x, y, z)*NodeSize, FVector::OneVector*NodeSize / 2.3f, FLinearColor::Red, FRotator::ZeroRotator, 0);
 }
 
 // Função que constrói a grade de pathfinding
@@ -159,15 +158,21 @@ FVector APathfindingGrid::GetRandomLocationWithinGrid()
 }
 
 // Marca nós bloqueados com base nas posições dos cubos
-void APathfindingGrid::MarkBlockedNodes(TArray<UStaticMeshComponent*> CubeArray)
+void APathfindingGrid::MarkBlockedNodes(TArray<AGridObject*> GridObjArray)
 {
+    // Limpa os nós bloqueados antigos
     BlockedNodes.Empty();
 
-    for (UStaticMeshComponent* Cube : CubeArray)
+    // Itera sobre todos os objetos na GridObjArray
+    for (AGridObject* GridObject : GridObjArray)
     {
-        FVector CubeLocation = Cube->GetComponentLocation();
+        // Obtém a localização do ator (cubo)
+        FVector CubeLocation = GridObject->GetCubeMesh()->GetComponentLocation();
+
+        // Encontra o nó correspondente no grid
         PathfindingNode* Node = NodeFromLocation(CubeLocation);
 
+        // Se o nó foi encontrado, marca-o como bloqueado
         if (Node)
         {
             BlockedNodes.Add(Node);

@@ -8,6 +8,7 @@
 #include "PathfindingGrid.h"
 #include "Pathfinder.h"
 #include "PathfindingController.h"
+#include "GridObject.h"
 #include "TopDownCameraPawn.h"
 #include "Components/StaticMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -61,6 +62,13 @@ void AGridController::SetupInputComponent()
     {
         // Configura o evento de clique do mouse
         EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Triggered, this, &AGridController::OnLeftMouseClick);
+
+        // Liga o movimento de olhar para o InputAction AI_Look
+        EnhancedInputComponent->BindAction(AI_Look, ETriggerEvent::Triggered, this, &AGridController::Look);
+
+        // Liga o botão direito do mouse
+        EnhancedInputComponent->BindAction(AI_RightClick, ETriggerEvent::Started, this, &AGridController::OnRightMouseDown);
+        EnhancedInputComponent->BindAction(AI_RightClick, ETriggerEvent::Completed, this, &AGridController::OnRightMouseUp);
     }
     else
     {
@@ -68,8 +76,38 @@ void AGridController::SetupInputComponent()
     }
 }
 
+void AGridController::Look(const FInputActionValue& Value)
+{
+    // Verifica se o botão direito do mouse está pressionado
+    if (!bIsRightMouseButtonDown)
+    {
+        return; // Não faz nada se o botão direito não estiver pressionado
+    }
+
+    const FVector2D LookAxisVector = Value.Get<FVector2D>();
+
+    // Verifica se o Pawn controlado é do tipo ATopDownCameraPawn
+    ATopDownCameraPawn* CameraPawn = Cast<ATopDownCameraPawn>(GetPawn());
+    if (CameraPawn)
+    {
+        // Passa os valores de input para a função MoveSpringArm no CameraPawn
+        CameraPawn->MoveSpringArm(LookAxisVector);
+    }
+}
+
+void AGridController::OnRightMouseDown(const FInputActionValue& Value)
+{
+    bIsRightMouseButtonDown = true;
+}
+
+void AGridController::OnRightMouseUp(const FInputActionValue& Value)
+{
+    bIsRightMouseButtonDown = false;
+}
+
 void AGridController::OnLeftMouseClick()
 {
+    if (bIsCubeMoving) return;
     FHitResult HitResult;
     if (GetHitResultUnderCursorForGrid(HitResult))
     {
@@ -79,22 +117,33 @@ void AGridController::OnLeftMouseClick()
             TargetLocation = HitResult.ImpactPoint;
             MoveCubeToTarget(SelectedCube, TargetLocation);
 
-            if (PathfindingController == nullptr)
-                PathfindingController = Cast<APathfindingController>(UGameplayStatics::GetActorOfClass(GetWorld(), APathfindingController::StaticClass()));
-            PathfindingController->MarkBlockedNodes();
-
             bIsCubeMoving = true; // O cubo está em movimento
             bIsAwaitingTarget = false; // Não aguardamos mais o clique no grid
         }
         // Clique em um cubo: Seleciona o cubo
-        else if (UStaticMeshComponent* HitCube = Cast<UStaticMeshComponent>(HitResult.GetComponent()))
+        else if (UStaticMeshComponent* HitMeshComponent = Cast<UStaticMeshComponent>(HitResult.GetComponent()))
         {
-            if (HitCube->ComponentTags.Num() > 0 && HitCube->ComponentTags[0].ToString().StartsWith("Cube"))
+            // Obtém o AGridObject associado ao componente clicado
+            AGridObject* HitGridObject = Cast<AGridObject>(HitMeshComponent->GetOwner());
+
+            if (HitGridObject)
             {
-                SelectCube(HitCube);
+                SelectCube(HitGridObject);
+
+                // Agora o cubo clicado é um AGridObject
+                ATopDownCameraPawn* PlayerPawn = Cast<ATopDownCameraPawn>(GetPawn());
+                if (PlayerPawn)
+                {
+                    // Atualiza o pivô da câmera para o cubo clicado (AGridObject)
+                    PlayerPawn->SetCameraPivot(HitGridObject);
+                }
 
                 // Inicia o timer para aguardar 1.5 segundos antes de permitir o clique no grid
                 GetWorld()->GetTimerManager().SetTimer(AwaitingTargetTimerHandle, this, &AGridController::EnableAwaitingTarget, 1.5f, false);
+
+                if (PathfindingController == nullptr)
+                    PathfindingController = Cast<APathfindingController>(UGameplayStatics::GetActorOfClass(GetWorld(), APathfindingController::StaticClass()));
+                PathfindingController->MarkBlockedNodes();
             }
         }
     }
@@ -111,7 +160,7 @@ void AGridController::UpdatePathAndMoveCube()
     if (PathfinderInstance && GridInstance)
     {
         // Calcula o caminho do início ao fim
-        TArray<FVector> Path = PathfinderInstance->FindPathArray(StartLocation, EndLocation);
+        TArray<FVector> Path = PathfinderInstance->FindPath(StartLocation, EndLocation);
 
         // Opcionalmente: Visualiza o caminho
         for (int32 i = 0; i < Path.Num() - 1; i++)
@@ -121,16 +170,16 @@ void AGridController::UpdatePathAndMoveCube()
     }
 }
 
-void AGridController::SelectCube(UStaticMeshComponent* Cube)
+void AGridController::SelectCube(AGridObject* Cube)
 {
     SelectedCube = Cube;
 
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("CUBE")));
+    //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("CUBE")));
 
-    ChangeCubeColor(SelectedCube, FLinearColor::Red);
+    ChangeCubeColor(Cube->GetCubeMesh(), FLinearColor::Red);
 }
 
-void AGridController::MoveCubeToTarget(UStaticMeshComponent* Cube, const FVector& Target)
+void AGridController::MoveCubeToTarget(AGridObject* Cube, const FVector& Target)
 {
     if (PathfinderInstance == nullptr)
         PathfinderInstance = Cast<APathfinder>(UGameplayStatics::GetActorOfClass(GetWorld(), APathfinder::StaticClass()));
@@ -139,13 +188,13 @@ void AGridController::MoveCubeToTarget(UStaticMeshComponent* Cube, const FVector
 
     if (PathfinderInstance && GridInstance)
     {
-        StartLocation = Cube->GetComponentLocation();
+        StartLocation = Cube->GetCubeMesh()->GetComponentLocation();
 
         // Desenha a posição inicial do cubo para depuração
         DrawDebugSphere(GetWorld(), StartLocation, 25.0f, 12, FColor::Red, false, 5.0f);
 
         // Calcula o caminho entre a posição inicial e o ponto alvo
-        PathArray = PathfinderInstance->FindPathArray(StartLocation, Target);
+        PathArray = PathfinderInstance->FindPath(StartLocation, Target);
 
         if (PathArray.Num() > 0)
         {
@@ -163,15 +212,15 @@ void AGridController::MoveAlongPath(float DeltaTime)
         // O cubo chegou ao final do caminho
         bIsMoving = false;
         bIsCubeMoving = false; // O cubo chegou ao destino
-        ChangeCubeColor(SelectedCube, FLinearColor::Blue); // Muda a cor do cubo para azul
+        ChangeCubeColor(SelectedCube->GetCubeMesh(), FLinearColor::Blue); // Muda a cor do cubo para azul
         SelectedCube = nullptr; // Limpa o cubo selecionado
         return;
     }
 
-    ChangeCubeColor(SelectedCube, FLinearColor::Yellow); // Muda a cor do cubo enquanto se move
+    ChangeCubeColor(SelectedCube->GetCubeMesh(), FLinearColor::Yellow); // Muda a cor do cubo enquanto se move
 
     FVector CurrentTarget = PathArray[CurrentPathIndex];
-    FVector CurrentLocation = SelectedCube->GetComponentLocation();
+    FVector CurrentLocation = SelectedCube->GetCubeMesh()->GetComponentLocation();
 
     // Calcula a direção e a distância para o próximo nó
     FVector Direction = (CurrentTarget - CurrentLocation).GetSafeNormal();
@@ -188,7 +237,7 @@ void AGridController::MoveAlongPath(float DeltaTime)
     }
 
     PathfindingController->VisualizePath(PathArray); // Visualiza o caminho
-    SelectedCube->SetWorldLocation(NewLocation);
+    SelectedCube->SetActorLocation(NewLocation);
 
     // Desenha uma linha para visualizar o movimento
     DrawDebugLine(GetWorld(), CurrentLocation, NewLocation, FColor::Red, false, 0.1f, 0, 5.0f);
@@ -205,5 +254,5 @@ void AGridController::ChangeCubeColor(UStaticMeshComponent* Cube, const FLinearC
 
 void AGridController::EnableAwaitingTarget()
 {
-    bIsAwaitingTarget = true; // Agora podemos aguardar o segundo clique no grid
+    bIsAwaitingTarget = true; // aguardar o segundo clique no grid
 }

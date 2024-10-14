@@ -7,6 +7,9 @@
 #include "Camera/CameraComponent.h"
 #include "TopDownCameraPawn.generated.h"
 
+class UCameraComponent;
+class USpringArmComponent;
+
 UCLASS()
 class IGDEVTEST_API ATopDownCameraPawn : public APawn
 {
@@ -25,9 +28,9 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
     UCameraComponent* TopDownCamera;
 
-    // Scene component to define the root of the pawn
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-    USceneComponent* Root;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
+    USpringArmComponent* SpringArm;
+
 
     // Called every frame
     virtual void Tick(float DeltaTime) override;
@@ -39,6 +42,16 @@ public:
     AActor* TargetActor;
 
     // Adjust camera pivot around the selected object
-    void SetCameraPivot(AActor* NewTarget);
+    void SetCameraPivot(AActor* NewTargetComponent);
+
+    // Função para mover o SpringArm com base nos valores de input
+    void MoveSpringArm(FVector2D LookAxisVector);
+
+private:
+    FVector CurrentTargetLocation; // Armazena a posição atual do cubo a ser seguido
+
+    // Sensibilidade para a rotação do SprintArm
+    UPROPERTY(EditAnywhere, Category = "Camera")
+    float LookSensitivity = 2.0f;
 
 };

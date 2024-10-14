@@ -6,11 +6,13 @@
 #include "GameFramework/Actor.h"
 #include "Pathfinder.h"
 #include "PathfindingGrid.h"
+#include "GridObject.h"
 #include "Components/StaticMeshComponent.h"
 #include "PathfindingController.generated.h"
 
 class APathfinder;
 class APathfindingGrid;
+class AGridObject;
 class UStaticMeshComponent;
 
 UCLASS()
@@ -31,11 +33,11 @@ public:
     virtual void Tick(float DeltaTime) override;
 
     // Referências para as classes de pathfinding
-    UPROPERTY(EditAnywhere, Category = "Pathfinding")
-    TSubclassOf<APathfindingGrid> PathfindingGridClass;  // Classe da grade de pathfinding
+    UPROPERTY(EditDefaultsOnly, Category = "Pathfinding")
+    TSubclassOf<APathfindingGrid> PathfindingGridClass;
 
-    UPROPERTY(EditAnywhere, Category = "Pathfinding")
-    TSubclassOf<APathfinder> PathfinderClass;  // Classe do pathfinder
+    UPROPERTY(EditDefaultsOnly, Category = "Pathfinding")
+    TSubclassOf<APathfinder> PathfinderClass;
 
     // Instâncias da grade de pathfinding e do pathfinder
     UPROPERTY()
@@ -49,23 +51,13 @@ public:
     int32 NumberOfCubes = 5;
 
     // Referência aos componentes de malha estática dos cubos
-    UPROPERTY(EditAnywhere, Category = "Pathfinding")
-    TArray<UStaticMeshComponent*> CubeArray;
+    UPROPERTY(EditDefaultsOnly, Category = "Pathfinding")
+    TArray<AGridObject*> GridObjArray;
 
-    // Malha estática usada pelos cubos
-    UPROPERTY(EditAnywhere, Category = "Pathfinding")
-    UStaticMesh* CubeMesh;
+    // Objeto do grid
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pathfinding")
+    TSubclassOf<AGridObject> GridObj;
 
-    // Pontos de início e alvo representados por cubos de malha estática
-    UPROPERTY(EditAnywhere)
-    UStaticMeshComponent* StartPointCube;
-
-    UPROPERTY(EditAnywhere)
-    UStaticMeshComponent* TargetPointCube;
-
-    // Função que atualiza o sistema de pathfinding
-    UFUNCTION(BlueprintCallable, Category = "Pathfinding")
-    void UpdatePathfinding();
 
     // Função de depuração para visualizar o caminho calculado
     void VisualizePath(const TArray<FVector>& Path);
@@ -76,15 +68,24 @@ public:
     // Função que marca os nós bloqueados na grade
     void MarkBlockedNodes();
 
-    // Flag para desenhar a grade no modo de depuração
-    UPROPERTY(EditAnywhere, Category = Grid)
-    bool DebugDraw;
+    // Variável EditAnywhere para ativar/desativar o grid
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Debug")
+    bool DrawGrid;
 
-    // Função chamada ao construir o ator no editor (desenha a grade)
-    virtual void OnConstruction(const FTransform& Transform) override;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Debug")
+    bool DrawPath;
+
+    // Função para modificar o DebugDraw do Grid
+    UFUNCTION(BlueprintCallable, Category = "Debug")
+    void SetGridVisibility(bool bVisible);
+
+
 
 private:
     // Variável que armazena o caminho atual calculado
     TArray<FVector> CurrentPath;
+
+    // Variável para monitorar mudanças no DrawGrid
+    bool bLastDrawGridValue;
 
 };

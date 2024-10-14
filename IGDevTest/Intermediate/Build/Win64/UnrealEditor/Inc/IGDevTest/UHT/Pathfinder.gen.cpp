@@ -73,22 +73,13 @@ void EmptyLinkFunctionForGeneratedCodePathfinder() {}
 		}
 		return Z_Registration_Info_UEnum_EHeuristic.InnerSingleton;
 	}
-	DEFINE_FUNCTION(APathfinder::execFindPathArray)
-	{
-		P_GET_STRUCT(FVector,Z_Param_Start);
-		P_GET_STRUCT(FVector,Z_Param_End);
-		P_FINISH;
-		P_NATIVE_BEGIN;
-		*(TArray<FVector>*)Z_Param__Result=P_THIS->FindPathArray(Z_Param_Start,Z_Param_End);
-		P_NATIVE_END;
-	}
 	DEFINE_FUNCTION(APathfinder::execFindPath)
 	{
 		P_GET_STRUCT(FVector,Z_Param_Start);
 		P_GET_STRUCT(FVector,Z_Param_End);
 		P_FINISH;
 		P_NATIVE_BEGIN;
-		*(FVector*)Z_Param__Result=P_THIS->FindPath(Z_Param_Start,Z_Param_End);
+		*(TArray<FVector>*)Z_Param__Result=P_THIS->FindPath(Z_Param_Start,Z_Param_End);
 		P_NATIVE_END;
 	}
 	void APathfinder::StaticRegisterNativesAPathfinder()
@@ -96,56 +87,12 @@ void EmptyLinkFunctionForGeneratedCodePathfinder() {}
 		UClass* Class = APathfinder::StaticClass();
 		static const FNameNativePtrPair Funcs[] = {
 			{ "FindPath", &APathfinder::execFindPath },
-			{ "FindPathArray", &APathfinder::execFindPathArray },
 		};
 		FNativeFunctionRegistrar::RegisterFunctions(Class, Funcs, UE_ARRAY_COUNT(Funcs));
 	}
 	struct Z_Construct_UFunction_APathfinder_FindPath_Statics
 	{
 		struct Pathfinder_eventFindPath_Parms
-		{
-			FVector Start;
-			FVector End;
-			FVector ReturnValue;
-		};
-		static const UECodeGen_Private::FStructPropertyParams NewProp_Start;
-		static const UECodeGen_Private::FStructPropertyParams NewProp_End;
-		static const UECodeGen_Private::FStructPropertyParams NewProp_ReturnValue;
-		static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
-#if WITH_METADATA
-		static const UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[];
-#endif
-		static const UECodeGen_Private::FFunctionParams FuncParams;
-	};
-	const UECodeGen_Private::FStructPropertyParams Z_Construct_UFunction_APathfinder_FindPath_Statics::NewProp_Start = { "Start", nullptr, (EPropertyFlags)0x0010000000000080, UECodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(Pathfinder_eventFindPath_Parms, Start), Z_Construct_UScriptStruct_FVector, METADATA_PARAMS(0, nullptr) };
-	const UECodeGen_Private::FStructPropertyParams Z_Construct_UFunction_APathfinder_FindPath_Statics::NewProp_End = { "End", nullptr, (EPropertyFlags)0x0010000000000080, UECodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(Pathfinder_eventFindPath_Parms, End), Z_Construct_UScriptStruct_FVector, METADATA_PARAMS(0, nullptr) };
-	const UECodeGen_Private::FStructPropertyParams Z_Construct_UFunction_APathfinder_FindPath_Statics::NewProp_ReturnValue = { "ReturnValue", nullptr, (EPropertyFlags)0x0010000000000580, UECodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(Pathfinder_eventFindPath_Parms, ReturnValue), Z_Construct_UScriptStruct_FVector, METADATA_PARAMS(0, nullptr) };
-	const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_APathfinder_FindPath_Statics::PropPointers[] = {
-		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_APathfinder_FindPath_Statics::NewProp_Start,
-		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_APathfinder_FindPath_Statics::NewProp_End,
-		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_APathfinder_FindPath_Statics::NewProp_ReturnValue,
-	};
-#if WITH_METADATA
-	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UFunction_APathfinder_FindPath_Statics::Function_MetaDataParams[] = {
-		{ "Category", "AStar" },
-		{ "ModuleRelativePath", "Public/Pathfinder.h" },
-	};
-#endif
-	const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_APathfinder_FindPath_Statics::FuncParams = { (UObject*(*)())Z_Construct_UClass_APathfinder, nullptr, "FindPath", nullptr, nullptr, Z_Construct_UFunction_APathfinder_FindPath_Statics::PropPointers, UE_ARRAY_COUNT(Z_Construct_UFunction_APathfinder_FindPath_Statics::PropPointers), sizeof(Z_Construct_UFunction_APathfinder_FindPath_Statics::Pathfinder_eventFindPath_Parms), RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x04820401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_APathfinder_FindPath_Statics::Function_MetaDataParams), Z_Construct_UFunction_APathfinder_FindPath_Statics::Function_MetaDataParams) };
-	static_assert(UE_ARRAY_COUNT(Z_Construct_UFunction_APathfinder_FindPath_Statics::PropPointers) < 2048);
-	static_assert(sizeof(Z_Construct_UFunction_APathfinder_FindPath_Statics::Pathfinder_eventFindPath_Parms) < MAX_uint16);
-	UFunction* Z_Construct_UFunction_APathfinder_FindPath()
-	{
-		static UFunction* ReturnFunction = nullptr;
-		if (!ReturnFunction)
-		{
-			UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_APathfinder_FindPath_Statics::FuncParams);
-		}
-		return ReturnFunction;
-	}
-	struct Z_Construct_UFunction_APathfinder_FindPathArray_Statics
-	{
-		struct Pathfinder_eventFindPathArray_Parms
 		{
 			FVector Start;
 			FVector End;
@@ -161,31 +108,37 @@ void EmptyLinkFunctionForGeneratedCodePathfinder() {}
 #endif
 		static const UECodeGen_Private::FFunctionParams FuncParams;
 	};
-	const UECodeGen_Private::FStructPropertyParams Z_Construct_UFunction_APathfinder_FindPathArray_Statics::NewProp_Start = { "Start", nullptr, (EPropertyFlags)0x0010000000000080, UECodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(Pathfinder_eventFindPathArray_Parms, Start), Z_Construct_UScriptStruct_FVector, METADATA_PARAMS(0, nullptr) };
-	const UECodeGen_Private::FStructPropertyParams Z_Construct_UFunction_APathfinder_FindPathArray_Statics::NewProp_End = { "End", nullptr, (EPropertyFlags)0x0010000000000080, UECodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(Pathfinder_eventFindPathArray_Parms, End), Z_Construct_UScriptStruct_FVector, METADATA_PARAMS(0, nullptr) };
-	const UECodeGen_Private::FStructPropertyParams Z_Construct_UFunction_APathfinder_FindPathArray_Statics::NewProp_ReturnValue_Inner = { "ReturnValue", nullptr, (EPropertyFlags)0x0000000000000000, UECodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, Z_Construct_UScriptStruct_FVector, METADATA_PARAMS(0, nullptr) };
-	const UECodeGen_Private::FArrayPropertyParams Z_Construct_UFunction_APathfinder_FindPathArray_Statics::NewProp_ReturnValue = { "ReturnValue", nullptr, (EPropertyFlags)0x0010000000000580, UECodeGen_Private::EPropertyGenFlags::Array, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(Pathfinder_eventFindPathArray_Parms, ReturnValue), EArrayPropertyFlags::None, METADATA_PARAMS(0, nullptr) };
-	const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_APathfinder_FindPathArray_Statics::PropPointers[] = {
-		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_APathfinder_FindPathArray_Statics::NewProp_Start,
-		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_APathfinder_FindPathArray_Statics::NewProp_End,
-		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_APathfinder_FindPathArray_Statics::NewProp_ReturnValue_Inner,
-		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_APathfinder_FindPathArray_Statics::NewProp_ReturnValue,
+	const UECodeGen_Private::FStructPropertyParams Z_Construct_UFunction_APathfinder_FindPath_Statics::NewProp_Start = { "Start", nullptr, (EPropertyFlags)0x0010000000000080, UECodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(Pathfinder_eventFindPath_Parms, Start), Z_Construct_UScriptStruct_FVector, METADATA_PARAMS(0, nullptr) };
+	const UECodeGen_Private::FStructPropertyParams Z_Construct_UFunction_APathfinder_FindPath_Statics::NewProp_End = { "End", nullptr, (EPropertyFlags)0x0010000000000080, UECodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(Pathfinder_eventFindPath_Parms, End), Z_Construct_UScriptStruct_FVector, METADATA_PARAMS(0, nullptr) };
+	const UECodeGen_Private::FStructPropertyParams Z_Construct_UFunction_APathfinder_FindPath_Statics::NewProp_ReturnValue_Inner = { "ReturnValue", nullptr, (EPropertyFlags)0x0000000000000000, UECodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, Z_Construct_UScriptStruct_FVector, METADATA_PARAMS(0, nullptr) };
+	const UECodeGen_Private::FArrayPropertyParams Z_Construct_UFunction_APathfinder_FindPath_Statics::NewProp_ReturnValue = { "ReturnValue", nullptr, (EPropertyFlags)0x0010000000000580, UECodeGen_Private::EPropertyGenFlags::Array, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(Pathfinder_eventFindPath_Parms, ReturnValue), EArrayPropertyFlags::None, METADATA_PARAMS(0, nullptr) };
+	const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_APathfinder_FindPath_Statics::PropPointers[] = {
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_APathfinder_FindPath_Statics::NewProp_Start,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_APathfinder_FindPath_Statics::NewProp_End,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_APathfinder_FindPath_Statics::NewProp_ReturnValue_Inner,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_APathfinder_FindPath_Statics::NewProp_ReturnValue,
 	};
 #if WITH_METADATA
-	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UFunction_APathfinder_FindPathArray_Statics::Function_MetaDataParams[] = {
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UFunction_APathfinder_FindPath_Statics::Function_MetaDataParams[] = {
 		{ "Category", "AStar" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "// Fun\xc3\xa7\xc3\xa3o para encontrar o caminho entre dois pontos e retornar um array de posi\xc3\xa7\xc3\xb5""es\n" },
+#endif
 		{ "ModuleRelativePath", "Public/Pathfinder.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Fun\xc3\xa7\xc3\xa3o para encontrar o caminho entre dois pontos e retornar um array de posi\xc3\xa7\xc3\xb5""es" },
+#endif
 	};
 #endif
-	const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_APathfinder_FindPathArray_Statics::FuncParams = { (UObject*(*)())Z_Construct_UClass_APathfinder, nullptr, "FindPathArray", nullptr, nullptr, Z_Construct_UFunction_APathfinder_FindPathArray_Statics::PropPointers, UE_ARRAY_COUNT(Z_Construct_UFunction_APathfinder_FindPathArray_Statics::PropPointers), sizeof(Z_Construct_UFunction_APathfinder_FindPathArray_Statics::Pathfinder_eventFindPathArray_Parms), RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x04820401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_APathfinder_FindPathArray_Statics::Function_MetaDataParams), Z_Construct_UFunction_APathfinder_FindPathArray_Statics::Function_MetaDataParams) };
-	static_assert(UE_ARRAY_COUNT(Z_Construct_UFunction_APathfinder_FindPathArray_Statics::PropPointers) < 2048);
-	static_assert(sizeof(Z_Construct_UFunction_APathfinder_FindPathArray_Statics::Pathfinder_eventFindPathArray_Parms) < MAX_uint16);
-	UFunction* Z_Construct_UFunction_APathfinder_FindPathArray()
+	const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_APathfinder_FindPath_Statics::FuncParams = { (UObject*(*)())Z_Construct_UClass_APathfinder, nullptr, "FindPath", nullptr, nullptr, Z_Construct_UFunction_APathfinder_FindPath_Statics::PropPointers, UE_ARRAY_COUNT(Z_Construct_UFunction_APathfinder_FindPath_Statics::PropPointers), sizeof(Z_Construct_UFunction_APathfinder_FindPath_Statics::Pathfinder_eventFindPath_Parms), RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x04820401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_APathfinder_FindPath_Statics::Function_MetaDataParams), Z_Construct_UFunction_APathfinder_FindPath_Statics::Function_MetaDataParams) };
+	static_assert(UE_ARRAY_COUNT(Z_Construct_UFunction_APathfinder_FindPath_Statics::PropPointers) < 2048);
+	static_assert(sizeof(Z_Construct_UFunction_APathfinder_FindPath_Statics::Pathfinder_eventFindPath_Parms) < MAX_uint16);
+	UFunction* Z_Construct_UFunction_APathfinder_FindPath()
 	{
 		static UFunction* ReturnFunction = nullptr;
 		if (!ReturnFunction)
 		{
-			UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_APathfinder_FindPathArray_Statics::FuncParams);
+			UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_APathfinder_FindPath_Statics::FuncParams);
 		}
 		return ReturnFunction;
 	}
@@ -206,20 +159,15 @@ void EmptyLinkFunctionForGeneratedCodePathfinder() {}
 		static const UECodeGen_Private::FMetaDataPairParam NewProp_Heuristic_MetaData[];
 #endif
 		static const UECodeGen_Private::FEnumPropertyParams NewProp_Heuristic;
-		static const UECodeGen_Private::FObjectPropertyParams NewProp_CubeArray_Inner;
+		static const UECodeGen_Private::FObjectPropertyParams NewProp_GridObjArray_Inner;
 #if WITH_METADATA
-		static const UECodeGen_Private::FMetaDataPairParam NewProp_CubeArray_MetaData[];
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_GridObjArray_MetaData[];
 #endif
-		static const UECodeGen_Private::FArrayPropertyParams NewProp_CubeArray;
+		static const UECodeGen_Private::FArrayPropertyParams NewProp_GridObjArray;
 #if WITH_METADATA
 		static const UECodeGen_Private::FMetaDataPairParam NewProp_GridInstance_MetaData[];
 #endif
 		static const UECodeGen_Private::FObjectPropertyParams NewProp_GridInstance;
-#if WITH_METADATA
-		static const UECodeGen_Private::FMetaDataPairParam NewProp_Debug_MetaData[];
-#endif
-		static void NewProp_Debug_SetBit(void* Obj);
-		static const UECodeGen_Private::FBoolPropertyParams NewProp_Debug;
 		static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
 		static const FCppClassTypeInfoStatic StaticCppClassTypeInfo;
 		static const UECodeGen_Private::FClassParams ClassParams;
@@ -230,8 +178,7 @@ void EmptyLinkFunctionForGeneratedCodePathfinder() {}
 	};
 	static_assert(UE_ARRAY_COUNT(Z_Construct_UClass_APathfinder_Statics::DependentSingletons) < 16);
 	const FClassFunctionLinkInfo Z_Construct_UClass_APathfinder_Statics::FuncInfo[] = {
-		{ &Z_Construct_UFunction_APathfinder_FindPath, "FindPath" }, // 3617301184
-		{ &Z_Construct_UFunction_APathfinder_FindPathArray, "FindPathArray" }, // 2000674163
+		{ &Z_Construct_UFunction_APathfinder_FindPath, "FindPath" }, // 828619799
 	};
 	static_assert(UE_ARRAY_COUNT(Z_Construct_UClass_APathfinder_Statics::FuncInfo) < 2048);
 #if WITH_METADATA
@@ -244,50 +191,50 @@ void EmptyLinkFunctionForGeneratedCodePathfinder() {}
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_APathfinder_Statics::NewProp_Heuristic_MetaData[] = {
 		{ "Category", "Enum" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "// Define o tipo de heur\xc3\xadstica a ser utilizado\n" },
+#endif
 		{ "ModuleRelativePath", "Public/Pathfinder.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Define o tipo de heur\xc3\xadstica a ser utilizado" },
+#endif
 	};
 #endif
 	const UECodeGen_Private::FEnumPropertyParams Z_Construct_UClass_APathfinder_Statics::NewProp_Heuristic = { "Heuristic", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Enum, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(APathfinder, Heuristic), Z_Construct_UEnum_IGDevTest_EHeuristic, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_APathfinder_Statics::NewProp_Heuristic_MetaData), Z_Construct_UClass_APathfinder_Statics::NewProp_Heuristic_MetaData) }; // 4124415309
-	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_APathfinder_Statics::NewProp_CubeArray_Inner = { "CubeArray", nullptr, (EPropertyFlags)0x0000000000080008, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, Z_Construct_UClass_UStaticMeshComponent_NoRegister, METADATA_PARAMS(0, nullptr) };
+	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_APathfinder_Statics::NewProp_GridObjArray_Inner = { "GridObjArray", nullptr, (EPropertyFlags)0x0000000000080008, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, Z_Construct_UClass_UStaticMeshComponent_NoRegister, METADATA_PARAMS(0, nullptr) };
 #if WITH_METADATA
-	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_APathfinder_Statics::NewProp_CubeArray_MetaData[] = {
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_APathfinder_Statics::NewProp_GridObjArray_MetaData[] = {
 		{ "Category", "Pathfinding" },
 #if !UE_BUILD_SHIPPING
-		{ "Comment", "// Nova vari\xef\xbf\xbdvel para armazenar os cubos instanciados\n" },
+		{ "Comment", "// Array que armazena os cubos instanciados\n" },
 #endif
 		{ "EditInline", "true" },
 		{ "ModuleRelativePath", "Public/Pathfinder.h" },
 #if !UE_BUILD_SHIPPING
-		{ "ToolTip", "Nova vari\xef\xbf\xbdvel para armazenar os cubos instanciados" },
+		{ "ToolTip", "Array que armazena os cubos instanciados" },
 #endif
 	};
 #endif
-	const UECodeGen_Private::FArrayPropertyParams Z_Construct_UClass_APathfinder_Statics::NewProp_CubeArray = { "CubeArray", nullptr, (EPropertyFlags)0x0010008000000009, UECodeGen_Private::EPropertyGenFlags::Array, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(APathfinder, CubeArray), EArrayPropertyFlags::None, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_APathfinder_Statics::NewProp_CubeArray_MetaData), Z_Construct_UClass_APathfinder_Statics::NewProp_CubeArray_MetaData) };
+	const UECodeGen_Private::FArrayPropertyParams Z_Construct_UClass_APathfinder_Statics::NewProp_GridObjArray = { "GridObjArray", nullptr, (EPropertyFlags)0x0010008000000009, UECodeGen_Private::EPropertyGenFlags::Array, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(APathfinder, GridObjArray), EArrayPropertyFlags::None, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_APathfinder_Statics::NewProp_GridObjArray_MetaData), Z_Construct_UClass_APathfinder_Statics::NewProp_GridObjArray_MetaData) };
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_APathfinder_Statics::NewProp_GridInstance_MetaData[] = {
 		{ "Category", "Pathfinding" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "// Refer\xc3\xaancia para a inst\xc3\xa2ncia da grade de pathfinding\n" },
+#endif
 		{ "ModuleRelativePath", "Public/Pathfinder.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Refer\xc3\xaancia para a inst\xc3\xa2ncia da grade de pathfinding" },
+#endif
 	};
 #endif
 	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_APathfinder_Statics::NewProp_GridInstance = { "GridInstance", nullptr, (EPropertyFlags)0x0010000000000001, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(APathfinder, GridInstance), Z_Construct_UClass_APathfindingGrid_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_APathfinder_Statics::NewProp_GridInstance_MetaData), Z_Construct_UClass_APathfinder_Statics::NewProp_GridInstance_MetaData) };
-#if WITH_METADATA
-	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_APathfinder_Statics::NewProp_Debug_MetaData[] = {
-		{ "Category", "Pathfinding" },
-		{ "ModuleRelativePath", "Public/Pathfinder.h" },
-	};
-#endif
-	void Z_Construct_UClass_APathfinder_Statics::NewProp_Debug_SetBit(void* Obj)
-	{
-		((APathfinder*)Obj)->Debug = 1;
-	}
-	const UECodeGen_Private::FBoolPropertyParams Z_Construct_UClass_APathfinder_Statics::NewProp_Debug = { "Debug", nullptr, (EPropertyFlags)0x0010000000000001, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(APathfinder), &Z_Construct_UClass_APathfinder_Statics::NewProp_Debug_SetBit, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_APathfinder_Statics::NewProp_Debug_MetaData), Z_Construct_UClass_APathfinder_Statics::NewProp_Debug_MetaData) };
 	const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_APathfinder_Statics::PropPointers[] = {
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_APathfinder_Statics::NewProp_Heuristic_Underlying,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_APathfinder_Statics::NewProp_Heuristic,
-		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_APathfinder_Statics::NewProp_CubeArray_Inner,
-		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_APathfinder_Statics::NewProp_CubeArray,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_APathfinder_Statics::NewProp_GridObjArray_Inner,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_APathfinder_Statics::NewProp_GridObjArray,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_APathfinder_Statics::NewProp_GridInstance,
-		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_APathfinder_Statics::NewProp_Debug,
 	};
 	const FCppClassTypeInfoStatic Z_Construct_UClass_APathfinder_Statics::StaticCppClassTypeInfo = {
 		TCppClassTypeTraits<APathfinder>::IsAbstract,
@@ -331,9 +278,9 @@ void EmptyLinkFunctionForGeneratedCodePathfinder() {}
 		{ EHeuristic_StaticEnum, TEXT("EHeuristic"), &Z_Registration_Info_UEnum_EHeuristic, CONSTRUCT_RELOAD_VERSION_INFO(FEnumReloadVersionInfo, 4124415309U) },
 	};
 	const FClassRegisterCompiledInInfo Z_CompiledInDeferFile_FID__Projetos_Game_ignite_teste_unreal_IGDevTest_Source_IGDevTest_Public_Pathfinder_h_Statics::ClassInfo[] = {
-		{ Z_Construct_UClass_APathfinder, APathfinder::StaticClass, TEXT("APathfinder"), &Z_Registration_Info_UClass_APathfinder, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(APathfinder), 1580966884U) },
+		{ Z_Construct_UClass_APathfinder, APathfinder::StaticClass, TEXT("APathfinder"), &Z_Registration_Info_UClass_APathfinder, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(APathfinder), 221216696U) },
 	};
-	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID__Projetos_Game_ignite_teste_unreal_IGDevTest_Source_IGDevTest_Public_Pathfinder_h_2884480284(TEXT("/Script/IGDevTest"),
+	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID__Projetos_Game_ignite_teste_unreal_IGDevTest_Source_IGDevTest_Public_Pathfinder_h_2566210620(TEXT("/Script/IGDevTest"),
 		Z_CompiledInDeferFile_FID__Projetos_Game_ignite_teste_unreal_IGDevTest_Source_IGDevTest_Public_Pathfinder_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID__Projetos_Game_ignite_teste_unreal_IGDevTest_Source_IGDevTest_Public_Pathfinder_h_Statics::ClassInfo),
 		nullptr, 0,
 		Z_CompiledInDeferFile_FID__Projetos_Game_ignite_teste_unreal_IGDevTest_Source_IGDevTest_Public_Pathfinder_h_Statics::EnumInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID__Projetos_Game_ignite_teste_unreal_IGDevTest_Source_IGDevTest_Public_Pathfinder_h_Statics::EnumInfo));

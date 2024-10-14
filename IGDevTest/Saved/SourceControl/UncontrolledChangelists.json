@@ -5,16 +5,19 @@
 			"guid": "00000000000000000000000000000000",
 			"description": "Default Uncontrolled Changelist",
 			"files": [
-				"X:/_Projetos/Game/ignite-teste-unreal/IGDevTest/Content/StarterContent/Architecture/Floor_400x400.uasset",
-				"X:/_Projetos/Game/ignite-teste-unreal/IGDevTest/Content/Blueprints/BP_PathfindingGrid.uasset",
-				"X:/_Projetos/Game/ignite-teste-unreal/IGDevTest/Content/Maps/MainMap.umap",
+				"X:/_Projetos/Game/ignite-teste-unreal/IGDevTest/Content/StarterContent/HDRI/HDRI_Epic_Courtyard_Daylight.uasset",
 				"X:/_Projetos/Game/ignite-teste-unreal/IGDevTest/Content/Blueprints/BP_PathfindingController.uasset",
-				"X:/_Projetos/Game/ignite-teste-unreal/IGDevTest/Content/Blueprints/BP_Pathfinder.uasset",
 				"X:/_Projetos/Game/ignite-teste-unreal/IGDevTest/Content/Blueprints/BP_TopDownCameraPawn.uasset",
-				"X:/_Projetos/Game/ignite-teste-unreal/IGDevTest/Content/Blueprints/BP_PathfindGameModeBase.uasset",
+				"X:/_Projetos/Game/ignite-teste-unreal/IGDevTest/Content/Inputs/Actions/AI_Look.uasset",
 				"X:/_Projetos/Game/ignite-teste-unreal/IGDevTest/Content/Blueprints/BP_GridController.uasset",
 				"X:/_Projetos/Game/ignite-teste-unreal/IGDevTest/Content/Inputs/MainMappingContext.uasset",
-				"X:/_Projetos/Game/ignite-teste-unreal/IGDevTest/Content/Inputs/Actions/MouseAction.uasset"
+				"X:/_Projetos/Game/ignite-teste-unreal/IGDevTest/Content/Inputs/Actions/AI_Interact.uasset",
+				"X:/_Projetos/Game/ignite-teste-unreal/IGDevTest/Content/Inputs/Actions/MouseAction.uasset",
+				"X:/_Projetos/Game/ignite-teste-unreal/IGDevTest/Content/Inputs/IMC_Default.uasset",
+				"X:/_Projetos/Game/ignite-teste-unreal/IGDevTest/Content/Inputs/Actions/AI_RightClick.uasset",
+				"X:/_Projetos/Game/ignite-teste-unreal/IGDevTest/Content/Resources/Images/logo_ignite.uasset",
+				"X:/_Projetos/Game/ignite-teste-unreal/IGDevTest/Content/Resources/Materials/M_LogoIgnite.uasset",
+				"X:/_Projetos/Game/ignite-teste-unreal/IGDevTest/Content/Maps/MainMap.umap"
 			]
 		}
 	]

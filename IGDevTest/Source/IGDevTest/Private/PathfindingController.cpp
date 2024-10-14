@@ -15,16 +15,12 @@ APathfindingController::APathfindingController()
 {
     PrimaryActorTick.bCanEverTick = true;
 
-    DebugDraw = false;  // Depuração desabilitada por padrão
 
-    // Cria os cubos que representam os pontos de início e destino
-    StartPointCube = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StartPointCube"));
-    TargetPointCube = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TargetPointCube"));
+    DrawGrid = true;
+    bLastDrawGridValue = DrawGrid;
 
-    // Anexa os cubos ao componente raiz
-    RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
-    StartPointCube->SetupAttachment(RootComponent);
-    TargetPointCube->SetupAttachment(RootComponent);
+    DrawPath = true;
+
 }
 
 // Função chamada quando o jogo começa ou o ator é gerado
@@ -45,7 +41,7 @@ void APathfindingController::BeginPlay()
     }
 
     // Verifica se as instâncias e a malha dos cubos foram corretamente configuradas
-    if (GridInstance == nullptr || PathfinderInstance == nullptr || CubeMesh == nullptr)
+    if (GridInstance == nullptr || PathfinderInstance == nullptr || GridObj == nullptr)
     {
         UE_LOG(LogTemp, Error, TEXT("Missing GridInstance, PathfinderInstance, or CubeMesh in the PathfindingController"));
         return;
@@ -61,93 +57,81 @@ void APathfindingController::BeginPlay()
     // Marca os nós bloqueados com base nos cubos
     MarkBlockedNodes();
 
-    // Calcula o caminho inicial
-    UpdatePathfinding();
+
+    // Atualizar a visibilidade do grid com base na variável DrawGrid
+    if (GridInstance)
+    {
+        SetGridVisibility(DrawGrid);
+
+    }
 }
 
 // Função chamada a cada frame
 void APathfindingController::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-    // Atualiza o sistema de pathfinding em tempo real, se os pontos de início ou destino se moverem (comentado por enquanto)
-    // UpdatePathfinding();
+    
+    // Verifica se o valor de DrawGrid foi alterado durante o jogo
+    if (DrawGrid != bLastDrawGridValue)
+    {
+        // Atualiza a visibilidade do grid
+        SetGridVisibility(DrawGrid);
+        bLastDrawGridValue = DrawGrid; // Atualiza o valor anterior
+    }
+}
+
+void APathfindingController::SetGridVisibility(bool bVisible)
+{
+    if (GridInstance)
+    {
+        GridInstance->DebugDraw = bVisible;
+    }
 }
 
 // Marca os nós bloqueados no grid com base na posição dos cubos
 void APathfindingController::MarkBlockedNodes()
 {
-    GridInstance->MarkBlockedNodes(CubeArray);
+    GridInstance->MarkBlockedNodes(GridObjArray);
 }
 
-// Atualiza o sistema de pathfinding quando os cubos são movidos
-void APathfindingController::UpdatePathfinding()
-{
-    if (PathfinderInstance != nullptr && GridInstance != nullptr)
-    {
-        FVector StartLocation = StartPointCube->GetComponentLocation();
-        FVector TargetLocation = TargetPointCube->GetComponentLocation();
-
-        // Obtém o caminho calculado pelo pathfinder
-        CurrentPath = PathfinderInstance->FindPathArray(StartLocation, TargetLocation);
-
-        // Visualiza o caminho calculado
-        VisualizePath(CurrentPath);
-    }
-}
 
 // Visualiza o caminho calculado com linhas de depuração
 void APathfindingController::VisualizePath(const TArray<FVector>& Path)
 {
+    if (!DrawPath) return;
     if (Path.Num() == 0) return;
 
     for (int32 i = 0; i < Path.Num() - 1; i++)
     {
         DrawDebugLine(GetWorld(), Path[i], Path[i + 1], FColor::Red, false, -1.f, 0, 5.f);
+
+     UKismetSystemLibrary::DrawDebugBox(this, Path[i], FVector::OneVector * GridInstance->NodeSize / 2.0f, FLinearColor::Blue, FRotator::ZeroRotator, 0);
     }
+
 }
 
-// Gera cubos em locais aleatórios dentro da grade
+
 void APathfindingController::SpawnCubes()
 {
     for (int32 i = 0; i < NumberOfCubes; i++)
     {
-        UStaticMeshComponent* NewCube = NewObject<UStaticMeshComponent>(this);
+        // Gera um novo ator do tipo AGridObject
+        FVector SpawnLocation = GridInstance->GetRandomLocationWithinGrid();
+        FRotator SpawnRotation = FRotator::ZeroRotator;
 
-        // Atribui uma tag única ao cubo
-        FString CubeTag = FString::Printf(TEXT("Cube"));
-        NewCube->ComponentTags.Add(FName(*CubeTag));
+        AGridObject* NewCube = GetWorld()->SpawnActor<AGridObject>(GridObj, SpawnLocation, SpawnRotation);
 
-        // Define a malha e a localização do cubo
-        NewCube->SetStaticMesh(CubeMesh);
-        NewCube->SetWorldLocation(GridInstance->GetRandomLocationWithinGrid());
-        NewCube->RegisterComponent();
-        NewCube->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
+        if (NewCube)
+        {
+            // Configura a tag única para o cubo
+            FString CubeTag = FString::Printf(TEXT("Cube_%d"), i);
+            NewCube->Tags.Add(FName(*CubeTag));
 
-        // Adiciona o cubo ao array
-        CubeArray.Add(NewCube);
+            // Adiciona o cubo ao array para referencia futura
+            GridObjArray.Add(NewCube);
+        }
     }
 }
 
-// Desenha a grade no editor durante a construção do ator
-void APathfindingController::OnConstruction(const FTransform& Transform)
-{
-    Super::OnConstruction(Transform);
 
-    if (DebugDraw)
-    {
-        // Define o tamanho do grid (exemplo retirado do blueprint)
-        FVector GridDimensions = FVector(50.f, 50.f, 0.0f);
 
-        // Calcula os vértices do quadrado que representa o grid
-        FVector TopLeft = GetActorLocation();
-        FVector TopRight = TopLeft + FVector(GridDimensions.X, 0, 0);
-        FVector BottomLeft = TopLeft + FVector(0, GridDimensions.Y, 0);
-        FVector BottomRight = TopLeft + FVector(GridDimensions.X, GridDimensions.Y, 0);
-
-        // Desenha as arestas do grid
-        DrawDebugLine(GetWorld(), TopLeft, TopRight, FColor::Blue, false, -1.0f, 0, 5.0f);
-        DrawDebugLine(GetWorld(), TopRight, BottomRight, FColor::Blue, false, -1.0f, 0, 5.0f);
-        DrawDebugLine(GetWorld(), BottomRight, BottomLeft, FColor::Blue, false, -1.0f, 0, 5.0f);
-        DrawDebugLine(GetWorld(), BottomLeft, TopLeft, FColor::Blue, false, -1.0f, 0, 5.0f);
-    }
-}

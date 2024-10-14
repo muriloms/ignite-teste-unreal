@@ -40,10 +40,25 @@
     <ClInclude Include="..\..\Source\IGDevTest\IGDevTest.h">
       <Filter>Source\IGDevTest</Filter>
     </ClInclude>
+    <Filter Include="Source\IGDevTest\.vscode">
+      <UniqueIdentifier>{8C3A1978-E3C2-3AF7-995D-3B83A6AEC987}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\IGDevTest\.vscode\c_cpp_properties.json">
+      <Filter>Source\IGDevTest\.vscode</Filter>
+    </None>
+    <None Include="..\..\Source\IGDevTest\.vscode\launch.json">
+      <Filter>Source\IGDevTest\.vscode</Filter>
+    </None>
+    <None Include="..\..\Source\IGDevTest\.vscode\settings.json">
+      <Filter>Source\IGDevTest\.vscode</Filter>
+    </None>
     <Filter Include="Source\IGDevTest\Private">
       <UniqueIdentifier>{FC90EBE7-BC88-3AA8-87A2-EDE332447EA7}</UniqueIdentifier>
     </Filter>
     <ClCompile Include="..\..\Source\IGDevTest\Private\GridController.cpp">
+      <Filter>Source\IGDevTest\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\IGDevTest\Private\GridObject.cpp">
       <Filter>Source\IGDevTest\Private</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\IGDevTest\Private\Pathfinder.cpp">
@@ -68,6 +83,9 @@
       <UniqueIdentifier>{2806305C-8407-3249-89E4-47095215D62F}</UniqueIdentifier>
     </Filter>
     <ClInclude Include="..\..\Source\IGDevTest\Public\GridController.h">
+      <Filter>Source\IGDevTest\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\IGDevTest\Public\GridObject.h">
       <Filter>Source\IGDevTest\Public</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\IGDevTest\Public\Pathfinder.h">

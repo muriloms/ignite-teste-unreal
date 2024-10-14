@@ -4,13 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "PathfindingNode.h"
+#include "GridObject.h"
 #include "GameFramework/Actor.h"
 #include "PathfindingGrid.generated.h"
+
+class AGridObject;
 
 UCLASS()
 class APathfindingGrid : public AActor
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 private:
     // Função para construir a grade de pathfinding
@@ -43,8 +46,8 @@ public:
     UPROPERTY(EditAnywhere, Category = Grid)
     TArray<TEnumAsByte<EObjectTypeQuery>> Trace;
 
-    // Flag para desenhar a grade no modo de depuração
-    UPROPERTY(EditAnywhere, Category = Grid)
+    // Variável para ativar/desativar a visualização do grid
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Debug")
     bool DebugDraw;
 
     // Retorna o nó correspondente a uma determinada localização no espaço
@@ -72,7 +75,7 @@ public:
     TSet<PathfindingNode*> BlockedNodes;
 
     // Marca nós como bloqueados se houver cubos presentes
-    void MarkBlockedNodes(TArray<UStaticMeshComponent*> CubeArray);
+    void MarkBlockedNodes(TArray<AGridObject*> GridObjArray);
 
     // Verifica se um nó está bloqueado
     bool IsNodeBlocked(PathfindingNode* Node);
@@ -86,3 +89,4 @@ public:
 private:
     // Armazena a localização do nó atualmente destacado
     FVector CurrentHighlightedNodeLocation;
+};

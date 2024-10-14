@@ -66,14 +66,26 @@ void EmptyLinkFunctionForGeneratedCodePathfindingGrid() {}
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_APathfindingGrid_Statics::NewProp_GridSize_MetaData[] = {
 		{ "Category", "Grid" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "// Tamanho da grade no espa\xc3\xa7o 3D\n" },
+#endif
 		{ "ModuleRelativePath", "Public/PathfindingGrid.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Tamanho da grade no espa\xc3\xa7o 3D" },
+#endif
 	};
 #endif
 	const UECodeGen_Private::FStructPropertyParams Z_Construct_UClass_APathfindingGrid_Statics::NewProp_GridSize = { "GridSize", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(APathfindingGrid, GridSize), Z_Construct_UScriptStruct_FVector, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_APathfindingGrid_Statics::NewProp_GridSize_MetaData), Z_Construct_UClass_APathfindingGrid_Statics::NewProp_GridSize_MetaData) };
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_APathfindingGrid_Statics::NewProp_NodeSize_MetaData[] = {
 		{ "Category", "Grid" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "// Tamanho de cada n\xc3\xb3 na grade\n" },
+#endif
 		{ "ModuleRelativePath", "Public/PathfindingGrid.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Tamanho de cada n\xc3\xb3 na grade" },
+#endif
 	};
 #endif
 	const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_APathfindingGrid_Statics::NewProp_NodeSize = { "NodeSize", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(APathfindingGrid, NodeSize), METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_APathfindingGrid_Statics::NewProp_NodeSize_MetaData), Z_Construct_UClass_APathfindingGrid_Statics::NewProp_NodeSize_MetaData) };
@@ -81,21 +93,33 @@ void EmptyLinkFunctionForGeneratedCodePathfindingGrid() {}
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_APathfindingGrid_Statics::NewProp_Trace_MetaData[] = {
 		{ "Category", "Grid" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "// Tipos de objetos considerados no tra\xc3\xa7o de detec\xc3\xa7\xc3\xa3o de n\xc3\xb3s\n" },
+#endif
 		{ "ModuleRelativePath", "Public/PathfindingGrid.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Tipos de objetos considerados no tra\xc3\xa7o de detec\xc3\xa7\xc3\xa3o de n\xc3\xb3s" },
+#endif
 	};
 #endif
 	const UECodeGen_Private::FArrayPropertyParams Z_Construct_UClass_APathfindingGrid_Statics::NewProp_Trace = { "Trace", nullptr, (EPropertyFlags)0x0010000000000001, UECodeGen_Private::EPropertyGenFlags::Array, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(APathfindingGrid, Trace), EArrayPropertyFlags::None, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_APathfindingGrid_Statics::NewProp_Trace_MetaData), Z_Construct_UClass_APathfindingGrid_Statics::NewProp_Trace_MetaData) }; // 3930035403
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_APathfindingGrid_Statics::NewProp_DebugDraw_MetaData[] = {
-		{ "Category", "Grid" },
+		{ "Category", "Debug" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "// Vari\xc3\xa1vel para ativar/desativar a visualiza\xc3\xa7\xc3\xa3o do grid\n" },
+#endif
 		{ "ModuleRelativePath", "Public/PathfindingGrid.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Vari\xc3\xa1vel para ativar/desativar a visualiza\xc3\xa7\xc3\xa3o do grid" },
+#endif
 	};
 #endif
 	void Z_Construct_UClass_APathfindingGrid_Statics::NewProp_DebugDraw_SetBit(void* Obj)
 	{
 		((APathfindingGrid*)Obj)->DebugDraw = 1;
 	}
-	const UECodeGen_Private::FBoolPropertyParams Z_Construct_UClass_APathfindingGrid_Statics::NewProp_DebugDraw = { "DebugDraw", nullptr, (EPropertyFlags)0x0010000000000001, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(APathfindingGrid), &Z_Construct_UClass_APathfindingGrid_Statics::NewProp_DebugDraw_SetBit, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_APathfindingGrid_Statics::NewProp_DebugDraw_MetaData), Z_Construct_UClass_APathfindingGrid_Statics::NewProp_DebugDraw_MetaData) };
+	const UECodeGen_Private::FBoolPropertyParams Z_Construct_UClass_APathfindingGrid_Statics::NewProp_DebugDraw = { "DebugDraw", nullptr, (EPropertyFlags)0x0010000000020005, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(APathfindingGrid), &Z_Construct_UClass_APathfindingGrid_Statics::NewProp_DebugDraw_SetBit, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_APathfindingGrid_Statics::NewProp_DebugDraw_MetaData), Z_Construct_UClass_APathfindingGrid_Statics::NewProp_DebugDraw_MetaData) };
 	const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_APathfindingGrid_Statics::PropPointers[] = {
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_APathfindingGrid_Statics::NewProp_GridSize,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_APathfindingGrid_Statics::NewProp_NodeSize,
@@ -141,9 +165,9 @@ void EmptyLinkFunctionForGeneratedCodePathfindingGrid() {}
 		static const FClassRegisterCompiledInInfo ClassInfo[];
 	};
 	const FClassRegisterCompiledInInfo Z_CompiledInDeferFile_FID__Projetos_Game_ignite_teste_unreal_IGDevTest_Source_IGDevTest_Public_PathfindingGrid_h_Statics::ClassInfo[] = {
-		{ Z_Construct_UClass_APathfindingGrid, APathfindingGrid::StaticClass, TEXT("APathfindingGrid"), &Z_Registration_Info_UClass_APathfindingGrid, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(APathfindingGrid), 2135611325U) },
+		{ Z_Construct_UClass_APathfindingGrid, APathfindingGrid::StaticClass, TEXT("APathfindingGrid"), &Z_Registration_Info_UClass_APathfindingGrid, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(APathfindingGrid), 909954709U) },
 	};
-	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID__Projetos_Game_ignite_teste_unreal_IGDevTest_Source_IGDevTest_Public_PathfindingGrid_h_1418709568(TEXT("/Script/IGDevTest"),
+	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID__Projetos_Game_ignite_teste_unreal_IGDevTest_Source_IGDevTest_Public_PathfindingGrid_h_2153230094(TEXT("/Script/IGDevTest"),
 		Z_CompiledInDeferFile_FID__Projetos_Game_ignite_teste_unreal_IGDevTest_Source_IGDevTest_Public_PathfindingGrid_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID__Projetos_Game_ignite_teste_unreal_IGDevTest_Source_IGDevTest_Public_PathfindingGrid_h_Statics::ClassInfo),
 		nullptr, 0,
 		nullptr, 0);

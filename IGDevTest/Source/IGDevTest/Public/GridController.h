@@ -12,6 +12,7 @@ class UStaticMeshComponent;
 class APathfindingGrid;
 class APathfinder;
 class APathfindingController;
+class AGridObject;
 
 /**
  * 
@@ -29,6 +30,11 @@ protected:
     virtual void BeginPlay() override;
     virtual void SetupInputComponent() override;
 
+    // Função chamada para processar movimento de rotação
+    void Look(const FInputActionValue& Value);
+    void OnRightMouseDown(const FInputActionValue& Value);
+    void OnRightMouseUp(const FInputActionValue& Value);
+
 public:
 
     // Função chamada a cada frame
@@ -38,20 +44,26 @@ public:
     UFUNCTION()
     void OnLeftMouseClick();
 
-    // Propriedades relacionadas ao pathfinding
-    UPROPERTY(EditAnywhere, Category = "Pathfinding")
     APathfindingGrid* GridInstance;  // Instância da grade de pathfinding
 
-    UPROPERTY(EditAnywhere, Category = "Pathfinding")
     APathfinder* PathfinderInstance;  // Instância do pathfinder
 
     APathfindingController* PathfindingController;  // Controlador do pathfinding
 
 private:
+    UPROPERTY(EditAnywhere, Category = "Pathfinding")
+    float MoveSpeed;
 
     // Ação de input para o clique do mouse
     UPROPERTY(EditAnywhere, Category = "Input")
     UInputAction* SetDestinationClickAction;
+
+    // Ação de input para o clique do mouse
+    UPROPERTY(EditAnywhere, Category = "Input")
+    UInputAction* AI_RightClick;
+
+    UPROPERTY(EditAnywhere, Category = "Input")
+    UInputAction* AI_Look;
 
     UPROPERTY(EditAnywhere, Category = "Input")
     UInputMappingContext* DefaultMappingContext;
@@ -67,16 +79,16 @@ private:
     void UpdatePathAndMoveCube();
 
     // Componente do cubo selecionado
-    UStaticMeshComponent* SelectedCube;
+    AGridObject* SelectedCube;
 
     // Localização de destino do cubo
     FVector TargetLocation;
 
     // Seleciona o cubo a ser movido
-    void SelectCube(UStaticMeshComponent* Cube);
+    void SelectCube(AGridObject* Cube);
 
     // Move o cubo para a localização de destino
-    void MoveCubeToTarget(UStaticMeshComponent* Cube, const FVector& Target);
+    void MoveCubeToTarget(AGridObject* Cube, const FVector& Target);
 
     // Altera a cor do cubo
     void ChangeCubeColor(UStaticMeshComponent* Cube, const FLinearColor& NewColor);
@@ -94,7 +106,7 @@ private:
     bool bIsAwaitingTarget;  // Verifica se está aguardando o destino
     bool bIsMoving;          // Verifica se o cubo está em movimento
     bool bIsCubeMoving;      // Verifica se um cubo está sendo movido
-    float MoveSpeed;         // Velocidade de movimento do cubo
+             // Velocidade de movimento do cubo
 
     // Função para mover o cubo ao longo do caminho
     void MoveAlongPath(float DeltaTime);
@@ -104,6 +116,11 @@ private:
     
     // Habilita o estado de aguardo de um destino
     void EnableAwaitingTarget();
+
+    // Referência para o Pawn da câmera
+    APawn* ControlledPawn;
+
+    bool bIsRightMouseButtonDown = false;
 
 	
 };

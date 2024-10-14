@@ -29,19 +29,13 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Enum)
     EHeuristic Heuristic;
 
-    // Função para encontrar o caminho entre dois pontos e retornar a posição final
-    UFUNCTION(BlueprintCallable, Category = "AStar")
-    FVector FindPath(FVector Start, FVector End);
-
+   
     // Função para encontrar o caminho entre dois pontos e retornar um array de posições
     UFUNCTION(BlueprintCallable, Category = "AStar")
-    TArray<FVector> FindPathArray(FVector Start, FVector End);
-
-    // Função para traçar o caminho de volta a partir do nó inicial até o nó final (retorna a posição final)
-    FVector RetracePath(PathfindingNode* StartNode, PathfindingNode* EndNode);
+    TArray<FVector> FindPath(FVector Start, FVector End);
 
     // Função para traçar o caminho de volta a partir do nó inicial até o nó final (retorna um array de posições)
-    TArray<FVector> RetracePathArray(PathfindingNode* StartNode, PathfindingNode* EndNode);
+    TArray<FVector> RetracePath(PathfindingNode* StartNode, PathfindingNode* EndNode);
 
     // Calcula a distância entre dois nós
     float GetDistance(PathfindingNode* A, PathfindingNode* B);
@@ -51,7 +45,7 @@ public:
 
     // Array que armazena os cubos instanciados
     UPROPERTY(EditAnywhere, Category = "Pathfinding")
-    TArray<UStaticMeshComponent*> CubeArray;
+    TArray<UStaticMeshComponent*> GridObjArray;
 
     // Método que verifica se há um cubo bloqueando o caminho em uma determinada localização
     bool IsCubeBlockingPath(FVector Location);
@@ -67,10 +61,5 @@ public:
     // Referência para a instância da grade de pathfinding
     UPROPERTY(EditAnywhere, Category = Pathfinding)
     APathfindingGrid* GridInstance;
-
-    // Flag para habilitar/desabilitar depuração
-    UPROPERTY(EditAnywhere, Category = Pathfinding)
-    bool Debug;
-
 
 };

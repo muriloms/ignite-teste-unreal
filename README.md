@@ -3,7 +3,7 @@
 ![Logo](./resources/logo_ignite.jpg)
 
 
-![demo](./resources/demo.mp4)
+![demo](./resources/demo.gif)
 
 ## Visão Geral
 

@@ -6,7 +6,7 @@
 ![demo](./resources/demo.gif)
 
 ### Video de demonstração
-![[video-demo](./resources/demo.mp4)
+[video-demo](./resources/demo.mp4)
 
 ## Visão Geral
 

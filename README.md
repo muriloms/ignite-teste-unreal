@@ -6,7 +6,7 @@
 ![demo](./resources/demo.gif)
 
 ### Video de demonstração
-![video-demo](./resources/demo.mp4)
+![[video-demo](https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pngwing.com%2Fpt%2Ffree-png-njobs&psig=AOvVaw1gTH4PkYABzZ4t7c8bxjhv&ust=1729025512961000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCLDps47gjokDFQAAAAAdAAAAABAE)](./resources/demo.mp4)
 
 ## Visão Geral
 

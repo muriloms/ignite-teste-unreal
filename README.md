@@ -5,6 +5,9 @@
 
 ![demo](./resources/demo.gif)
 
+### Video de demonstração
+![video-demo](./resources/demo.mp4)
+
 ## Visão Geral
 
 Este repositório contém a solução para um teste técnico de vaga para programador de gameplay. O objetivo é desenvolver um sistema de movimento para um personagem que simula a escalada em meshes estáticos em um ambiente 3D. O sistema foi projetado para permitir que o personagem controlado pelo jogador navegue dinamicamente ao redor de obstáculos, utilizando um algoritmo de pathfinding para garantir o caminho mais curto até o local clicado.
